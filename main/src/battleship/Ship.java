@@ -12,9 +12,15 @@ public class Ship {
     //       (dx, dy) = (0, -1) means VerticalDown
     private int orientationDx;
     private int orientationDy;
+    private int originColumn;
+    private int originRow;
     public Ship(int length){
         this.health = length;
         this.length = length;
+        this.originColumn = 0;
+        this.originRow = 0;
+        orientationDx = 1;
+        orientationDy = 0;
     }
 
     // Getters y Setters
@@ -25,10 +31,21 @@ public class Ship {
     public int getLength(){
         return length;
     }
+    public int getOriginRow() {
+        return originRow;
+    }
+    public void setOriginRow(int originRow) {
+        this.originRow = originRow;
+    }
+    public int getOriginColumn() {
+        return originColumn;
+    }
 
-    // Métodos
-    public boolean isAlive(Ship ship){
-        return ship.health > 0;
+    public void setOriginColumn(int originColumn) {
+        this.originColumn = originColumn;
+    }
+    public boolean isAlive(){
+        return health > 0;
     }
     public void hit(){
         health -= 1;

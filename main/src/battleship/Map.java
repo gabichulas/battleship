@@ -1,46 +1,20 @@
 package battleship;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Map {
-    private Ship[] ships;
+    private List<Ship> ships;
     private Quadrant[][] quadrants;
-    private int numRows;
-    private int numColumns;
-    // Getters y Setters
 
-    public Ship[] getShips() {
-        return ships;
-    }
+    private final int numRows;
 
-    public void setShips(Ship[] ships) {
-        this.ships = ships;
-    }
-
-    public boolean inBounds(int column, int row)
-    {
-        // Returns true if (column, row) is a valid map position
-        return row >= 0 && row < numRows && column >= 0 && column < numColumns;
-    }
-
-
-    public Quadrant getQuadrant(int column, int row)
-    {
-        if (!inBounds(column, row))
-        {
-            throw new IndexOutOfBoundsException("battleship.Map.getQuadrant() out of bounds: (" + row + ", " + column + ")");
-        }
-
-        return quadrants[column][row];
-    }
-    // Constructores
+    private final int numColumns;
 
     public Map(int numColumns, int numRows, int shipCount) {
         this.numRows = numRows;
         this.numColumns = numColumns;
-        ships = new Ship[shipCount];
+        ships = new ArrayList<>(shipCount);
 
         // Creates Quadrants map
         quadrants = new Quadrant[numColumns][numRows];
@@ -51,40 +25,60 @@ public class Map {
             for (int row = 0; row < numRows; row++)
                 quadrants[col][row] = new Quadrant();
         }
-
     }
 
-    // Métodos
+    // Getters y Setters
+    public int getNumRows() {
+        return numRows;
+    }
+    public int getNumColumns() {
+        return numColumns;
+    }
+    public List<Ship> getShips() {
+        return ships;
+    }
 
-    public List<Ship> getAlive(Ship[] ships){
+    public boolean inBounds(int column, int row)
+    {
+        // Returns true if (column, row) is a valid map position
+        return row >= 0 && row < numRows && column >= 0 && column < numColumns;
+    }
+    public Quadrant getQuadrant(int column, int row)
+    {
+        if (!inBounds(column, row))
+        {
+            throw new IndexOutOfBoundsException("battleship.Map.getQuadrant() out of bounds: (" + row + ", " + column + ")");
+        }
+
+        return quadrants[column][row];
+    }
+    public List<Ship> getAlive(){
         List<Ship> aliveShips = new ArrayList<Ship>();
-        int i;
-        for (i = 0; i <= ships.length; i++) {
-            if (ships[i].getHealth() > 0) {
-                aliveShips.add(ships[i]);
-            }
+        for (Ship ship : ships)
+        {
+            if (ship.isAlive())
+                aliveShips.add(ship);
         }
         return aliveShips;
     }
-
-    public List<Ship> getDestroyed(Ship[] ships){
+    public List<Ship> getDestroyed(){
         List<Ship> destroyedShips = new ArrayList<Ship>();
-        int i;
-        for (i = 0; i <= ships.length; i++) {
-            if (ships[i].getHealth() == 0) {
-                destroyedShips.add(ships[i]);
-            }
+        for (Ship ship : ships)
+        {
+            if (!ship.isAlive())
+                destroyedShips.add(ship);
         }
         return destroyedShips;
     }
-
-    public void addShip(Ship ship, int originColumn, int originRow)
+    public void addShip(Ship ship)
     {
+        int quadrantColumn = ship.getOriginColumn();
+        int quadrantRow = ship.getOriginRow();
         // Adds Ship to all corresponding Quadrants
         // NOTE: It doesn't check for valid position
         for (int i = 0; i < ship.getLength(); i++) {
 
-            Quadrant quadrant = getQuadrant(originColumn, originRow);
+            Quadrant quadrant = getQuadrant(quadrantColumn, quadrantRow);
             quadrant.setShip(ship);
 
             // todo: Set surrounding quadrants as surroundingShip
@@ -92,8 +86,9 @@ public class Map {
             //      for each quadrant set quadrant.setSurroundingShip(true)
 
             // Moves to next Quadrant
-            originColumn += ship.getOrientationDx();
-            originRow += ship.getOrientationDy();
+            quadrantColumn += ship.getOrientationDx();
+            quadrantRow += ship.getOrientationDy();
         }
+        ships.add(ship);
     }
 }
