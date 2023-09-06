@@ -15,12 +15,14 @@ public class Quadrant
     {
         ship = null;
         shot = false;
+        surroundsShip = false;
     }
 
     public void setShip(Ship ship) { this.ship = ship; }
     public Ship getShip() { return ship; }
     public boolean containsShip() { return ship != null; }
     public boolean surroundsShip() { return surroundsShip; }
+    public void setSurroundsShip(boolean surrounds) { surroundsShip = surrounds; }
     public boolean isShot() { return shot; }
     public void setShot(boolean state) { shot = state; }
 }

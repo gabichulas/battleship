@@ -155,23 +155,11 @@ public class MapLoader {
     {
         try
         {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            ConsoleColors.printInput("Ingrese la posición del barco (fila columna): ");
-
-            //String pos = reader.readLine();
-
-            /////////// todo:
             GraphicInterfaceMatrixOp window = new GraphicInterfaceMatrixOp(10,10);
-            String pos = window.showWindow();
-            //System.out.println(" coordenadas: " + pos);
-            ///////////
+            int[] pos = window.showWindow();
 
-            String[] positions = pos.trim().split(" ");
-            String row = positions[0];
-            String column = positions[1];
-            ConsoleColors.printStatus("Barco posicionado en el cuadrante (" + row + ", " + column + ")");
-            ship.setOriginColumn(Integer.parseInt(column));
-            ship.setOriginRow(Integer.parseInt(row));
+            ship.setOriginColumn(pos[0]);
+            ship.setOriginRow(pos[1]);
         } catch (Exception e)
         {
             ConsoleColors.printError("Posición inválida, debe tener formato: fila columna");

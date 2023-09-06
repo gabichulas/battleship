@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.security.KeyPair;
 import java.util.concurrent.CountDownLatch;
 
 public class GraphicInterfaceMatrixOp extends JFrame {
@@ -16,7 +17,7 @@ public class GraphicInterfaceMatrixOp extends JFrame {
     private int columnaClicada = -1; // Columna del botón clicado
 
     // Constructor de la interfaz gráfica de matriz
-    public GraphicInterfaceMatrixOp(int filas, int columnas) {
+    public GraphicInterfaceMatrixOp(int columnas, int filas) {
         this.filas = filas;
         this.columnas = columnas;
         botones = new JButton[filas][columnas];
@@ -64,7 +65,7 @@ public class GraphicInterfaceMatrixOp extends JFrame {
     }
 
     // Método para mostrar la ventana de la matriz
-    public String showWindow() {
+    public int[] showWindow() {
         int filas = 10;
         int columnas = 10;
 
@@ -90,7 +91,6 @@ public class GraphicInterfaceMatrixOp extends JFrame {
 
         int filaClicada = matrizInterfaz.getFilaClicada();
         int columnaClicada = matrizInterfaz.getColumnaClicada();
-
-        return (filaClicada + " " + columnaClicada); // Devuelve la fila y columna clicadas
+        return new int[]{ columnaClicada, filaClicada} ;
     }
 }

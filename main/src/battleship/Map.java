@@ -76,14 +76,22 @@ public class Map {
         int quadrantRow = ship.getOriginRow();
         // Adds Ship to all corresponding Quadrants
         // NOTE: It doesn't check for valid position
-        for (int i = 0; i < ship.getLength(); i++) {
+        for (int quadrant_index = 0; quadrant_index < ship.getLength(); quadrant_index++) {
 
             Quadrant quadrant = getQuadrant(quadrantColumn, quadrantRow);
             quadrant.setShip(ship);
 
-            // todo: Set surrounding quadrants as surroundingShip
-            //      should iterate through surrounding 3x3 grid and
-            //      for each quadrant set quadrant.setSurroundingShip(true)
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
+                {
+                    int subQuadrantColumn = quadrantColumn + i;
+                    int subQuadrantRow = quadrantRow + j;
+                    if (!inBounds(subQuadrantColumn, subQuadrantRow))
+                        continue;
+
+                    Quadrant subQuadrant = getQuadrant(subQuadrantColumn, subQuadrantRow);
+                    subQuadrant.setSurroundsShip(true);
+                }
 
             // Moves to next Quadrant
             quadrantColumn += ship.getOrientationDx();

@@ -64,7 +64,7 @@ public class GraphicInterface extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ImageIcon image = new ImageIcon(getClass().getResource(getImageURL()));
+        ImageIcon image = new ImageIcon(getImageURL());
         g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
