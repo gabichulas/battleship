@@ -1,5 +1,6 @@
 package battleship;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,8 +39,12 @@ public class Game {
         int mapRows = 10;
         player1 = new Player();
         player2 = new Player();
-        player1.setName("Player1");
-        player2.setName("Player2");
+
+        String nameP1 = JOptionPane.showInputDialog("Name Player 1");
+        String nameP2 = JOptionPane.showInputDialog("Name player 2");
+
+        player1.setName(nameP1);
+        player2.setName(nameP2);
 
         // todo Ask for ship count
         int shipCount = 3;
