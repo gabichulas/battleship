@@ -22,7 +22,7 @@ public class GraphicInterfaceMatrixOp extends JFrame {
         botones = new JButton[filas][columnas];
 
         setTitle("Matriz Interfaz");
-        setSize(650, 650);
+        setSize(450, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(filas, columnas));
 
