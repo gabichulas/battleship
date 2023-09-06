@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 public class InputUtils {
-    // Class with static methods used to simplify the usage of usewr input data
+    // Class with static methods used to simplify the usage of user input data
     public static boolean booleanInput(String msg)
     {
         boolean validInput = false;

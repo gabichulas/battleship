@@ -63,6 +63,11 @@ public class Game {
         mapLoader.loadPlayerMap(player1, shipLengths);
         mapLoader.loadPlayerMap(player2, shipLengths);
     }
+    public boolean playAgain(){
+        return InputUtils.booleanInput(
+                "Desea jugar de nuevo? (y/n): "
+        );
+    }
     private void displayWinner(){
         System.out.println("Displaying winner");
         // Displays winner and ends Game
