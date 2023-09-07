@@ -27,38 +27,107 @@ public class Game {
 
         Player current = player1;
         Player enemy = player2;
+        GameState GameState = battleship.GameState.Winner;
 
         while(!winner)
         {
+            System.out.println(current.getHits());
+            System.out.println(enemy.getHits());
             ConsoleColors.printStatus("Round of player: " + current.getName());
             winner = round(current, enemy);
 
-            if (winner)
+            if (winner){
+                GameState = battleship.GameState.Winner;
                 break;
-
+            }
+            if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
+                if (current.getHits() == enemy.getHits()) {
+                    GameState = battleship.GameState.Draw;
+                    break;
+                } else {
+                    if (current.getHits() > enemy.getHits()){
+                        winner = true;
+                        ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + current + " tuvo mas aciertos!");
+                    } else {
+                        winner = true;
+                        current = enemy;
+                        ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + current + " tuvo mas aciertos!");
+                    }
+                }
+            }
             // Swaps players
             Player temp = current;
             current = enemy;
             enemy = temp;
         }
-
-        ConsoleColors.printSuccess("Player: " + current.getName() + " won the match!");
-
+        switch (GameState) {
+            case Winner : ConsoleColors.printSuccess("Player: " + current.getName() + " won the match!"); break;
+            default: ConsoleColors.printWarning("Player " + current.getName() + " and player " + enemy.getName() + " tied!");
+        }
         if (winner)
             displayWinner();
     }
-
+    private Shot chooseShip(Player player, String className)
+    {
+        for (Ship ship : player.getMap().getAlive()) {
+            if (ship.getClass().getSimpleName().equals(className)) {
+                if (ship.specialShotLeft > 0) {
+                    ship.setSpecialShotLeft(ship.getSpecialShotLeft()-1);
+                    return ship.getSpecialShot();
+                } else {
+                    ConsoleColors.printWarning("A tu barco no le quedan disparos especiales!");
+                }
+            }
+        }
+        ConsoleColors.printWarning("No tiene barcos de tipo " + className + ". Desplegando disparo puntual.");
+        return new PointShot();
+    }
     private boolean round(Player current, Player enemy)
     {
-
+        if (current.getRemainingShots() == 0){ConsoleColors.printError("No te quedan disparos!"); ;return false;}
+        Shot shot = new PointShot();
         boolean hit = true;
         while(hit)
         {
+            boolean validInput = false;
+            while (!validInput) {
+                try {
+                    boolean specialChoose = InputUtils.booleanInput("Quiere usar un disparo especial? (y/n): ");
+                    if (specialChoose) {
+                        int whichSpecial = InputUtils.integerInput("Que barco quiere utilizar? (1: crucero, 2: submarino, 3: buque, 4: portaaviones): ");
+                        switch (whichSpecial) {
+                            case 1:
+                                shot = chooseShip(current, "Cruise");
+                                validInput = true;
+                                break;
+                            case 2:
+                                shot = chooseShip(current, "Submarine");
+                                validInput = true;
+                                break;
+                            case 3:
+                                shot = chooseShip(current, "Vessel");
+                                validInput = true;
+                                break;
+                            case 4:
+                                shot = chooseShip(current, "AircraftCarrier");
+                                validInput = true;
+                                break;
+                            default: throw new IOException();
+                        }
+                    } else { break;}
+                } catch (IOException e) {
+                    ConsoleColors.printError("Seleccione un numero entre 1 y 4.");
+                }
+            }
             // todo: select shot type
-            Shot shot = new PointShot();
-
-            hit = shoot(shot, enemy.getMap());
-
+            //Shot shot = new PointShot();
+            if (shot.getRequiredMissileCount() <= current.getRemainingShots()) {
+                hit = shoot(shot, enemy.getMap());
+                current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
+                ConsoleColors.printWarning("Te quedan "+current.getRemainingShots()+" tiros.");
+            } else {
+                ConsoleColors.printWarning("No tiene tiros suficientes para realizar este disparo."); break;
+            }
             if (hit)
             {
                 int aliveCount = enemy.getMap().getAlive().size();
@@ -123,7 +192,7 @@ public class Game {
         player2.setName(nameP2);
 
         // todo Ask for ship count
-        int shipCount = 3;
+        int shipCount = 2;
 
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
@@ -131,8 +200,11 @@ public class Game {
         // todo ask for ship lengths
         List<Integer> shipLengths = new ArrayList<Integer>();
         shipLengths.add(1);     // 1 ship of length 1
-        shipLengths.add(2);     // 1 ship of length 2
-        shipLengths.add(3);     // 1 ship of length 3
+        shipLengths.add(1);
+//        shipLengths.add(2);     // 1 ship of length 2
+//        shipLengths.add(3);     // 1 ship of length 3
+//        shipLengths.add(4);
+//        shipLengths.add(5);
 
         // Loads maps
         MapLoader.loadPlayerMap(player1, shipLengths);

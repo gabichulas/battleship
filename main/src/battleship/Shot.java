@@ -119,3 +119,23 @@ class CrossShot extends Shot
         return hitAny;
     }
 }
+class SquareShot extends Shot{
+    public SquareShot(){
+        super(9);
+    }
+    @Override
+    public boolean shot(Map map, int column, int row) {
+        boolean hitAny = false;
+        int i;
+        for (i = row - 1; i<= row + 1; i++ ){
+            if (!map.inBounds(column, i)){
+                continue;
+            }
+            HorizontalShot horizontalShot = new HorizontalShot(1);
+            hitAny |= horizontalShot.shot(map, column, i);
+            hitCount += horizontalShot.hitCount;
+            destroyedCount += horizontalShot.destroyedCount;
+        }
+        return hitAny;
+    }
+}

@@ -5,8 +5,17 @@ public class Player {
     private Map map;
     private int shots;
     private int hits;
+    private int remainingShots = 2;    // (numero provisorio)
 
     // Getters y Setters
+
+    public int getRemainingShots() {
+        return remainingShots;
+    }
+
+    public void setRemainingShots(int remainingShots) {
+        this.remainingShots = remainingShots;
+    }
 
     public String getName() {
         return name;

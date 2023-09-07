@@ -4,10 +4,11 @@ public class Cruise extends Ship{
     public Cruise()
     {
         super(2);
+        this.specialShotLeft = 4;
     }
 
     @Override
     public Shot getSpecialShot() {
-        return new HorizontalShot(1);
+        return new VerticalShot(1);
     }
 }

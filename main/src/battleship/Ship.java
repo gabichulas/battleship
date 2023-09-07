@@ -15,6 +15,7 @@ public abstract class Ship {
     private int originColumn;
     private int originRow;
     protected int specialShotLeft;
+
     public Ship(int length){
         this.health = length;
         this.length = length;
@@ -25,6 +26,14 @@ public abstract class Ship {
     }
 
     // Getters y Setters
+
+    public int getSpecialShotLeft() {
+        return specialShotLeft;
+    }
+
+    public void setSpecialShotLeft(int specialShotLeft) {
+        this.specialShotLeft = specialShotLeft;
+    }
 
     public int getHealth(){
         return health;

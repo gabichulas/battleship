@@ -4,10 +4,11 @@ public class Submarine extends Ship{
     public Submarine()
     {
         super(3);
+        this.specialShotLeft = 4;
     }
 
     @Override
     public Shot getSpecialShot() {
-        return new PointShot();
+        return new HorizontalShot(1);
     }
 }
