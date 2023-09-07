@@ -1,7 +1,7 @@
 package battleship;
 
 
-public class Ship {
+public abstract class Ship {
     private int health;
     private final int length; // length is final since it's not modified after construction
 
@@ -14,6 +14,7 @@ public class Ship {
     private int orientationDy;
     private int originColumn;
     private int originRow;
+    protected int specialShotLeft;
     public Ship(int length){
         this.health = length;
         this.length = length;
@@ -67,5 +68,7 @@ public class Ship {
         this.orientationDy = orientationDy;
     }
 
+    public boolean hasSpecialShotLeft() { return specialShotLeft > 0;}
 
+    public abstract Shot getSpecialShot();
 }

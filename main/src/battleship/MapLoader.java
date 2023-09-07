@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MapLoader {
-    public void loadPlayerMap(Player player, List<Integer> shipLengths){
+    public static void loadPlayerMap(Player player, List<Integer> shipLengths){
         ConsoleColors.printStage("Loading map of player: " + player.getName());
         // Displays the map and lets the user place each Ship
         Map map = player.getMap();
@@ -28,9 +28,27 @@ public class MapLoader {
         renderer.render();
     }
 
-    private void placeShip(Map map, int shipLength) {
+    private static void placeShip(Map map, int shipLength) {
         ConsoleColors.printStage("Placing ship of length: " + shipLength);
-        Ship ship = new Ship(shipLength);
+        Ship ship;
+        switch (shipLength)
+        {
+            case 1:
+                ship = new Boat();
+                break;
+            case 2:
+                ship = new Cruise();
+                break;
+            case 3:
+                ship = new Submarine();
+                break;
+            case 4:
+                ship = new Vessel();
+                break;
+            default:
+                ship = new AircraftCarrier();
+                break;
+        }
 
         MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
 
@@ -87,7 +105,7 @@ public class MapLoader {
         }
         // Lets user move and select specific ship position
     }
-    private boolean isValidQuadrant(Map map, int quadrantColumn, int quadrantRow)
+    private static boolean isValidQuadrant(Map map, int quadrantColumn, int quadrantRow)
     {
         // Tests if the quadrant can be used for placing ships
         if (!map.inBounds(quadrantColumn, quadrantRow))
@@ -110,7 +128,7 @@ public class MapLoader {
         return true;
     }
 
-    private boolean isValidShip(Map map, Ship ship)
+    private static boolean isValidShip(Map map, Ship ship)
     {
         // Tests if the ship can be placed in the map with that position
         int quadrantColumn = ship.getOriginColumn();
@@ -128,7 +146,7 @@ public class MapLoader {
         return true;
     }
 
-    private boolean inputSaveShip(Map map, Ship ship)
+    private static boolean inputSaveShip(Map map, Ship ship)
     {
         boolean validPosition = isValidShip(map, ship);
 
@@ -151,7 +169,7 @@ public class MapLoader {
         }
         return true;
     }
-    private void inputShipOrigin(Ship ship)
+    private static void inputShipOrigin(Ship ship)
     {
         try
         {
@@ -165,7 +183,7 @@ public class MapLoader {
             ConsoleColors.printError("Posición inválida, debe tener formato: fila columna");
         }
     }
-    private void inputShipRotation(Ship ship) {
+    private static void inputShipRotation(Ship ship) {
 
         boolean validInput = false;
         while (!validInput) {

@@ -14,7 +14,6 @@ public class Game {
     private Player player2;
 
     public Game() {
-
         // Initialized in init();
         player1 = null;
         player2 = null;
@@ -23,8 +22,6 @@ public class Game {
     public void play(){
 
         init();
-        // todo: battleship.Game loop
-
         System.out.println("Rounds starting!");
         boolean winner = false;
 
@@ -126,7 +123,7 @@ public class Game {
         player2.setName(nameP2);
 
         // todo Ask for ship count
-        int shipCount = 2;
+        int shipCount = 3;
 
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
@@ -135,17 +132,11 @@ public class Game {
         List<Integer> shipLengths = new ArrayList<Integer>();
         shipLengths.add(1);     // 1 ship of length 1
         shipLengths.add(2);     // 1 ship of length 2
-        //shipLengths.add(3);     // 1 ship of length 3
+        shipLengths.add(3);     // 1 ship of length 3
 
         // Loads maps
-        MapLoader mapLoader = new MapLoader();
-        mapLoader.loadPlayerMap(player1, shipLengths);
-        mapLoader.loadPlayerMap(player2, shipLengths);
-    }
-    public boolean playAgain(){
-        return InputUtils.booleanInput(
-                "Desea jugar de nuevo? (y/n): "
-        );
+        MapLoader.loadPlayerMap(player1, shipLengths);
+        MapLoader.loadPlayerMap(player2, shipLengths);
     }
     private void displayWinner(){
         System.out.println("Displaying winner");
