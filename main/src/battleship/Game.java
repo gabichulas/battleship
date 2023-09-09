@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-enum GameState {Winner, NoWinner, Draw}
+import java.util.Objects;
 
 public class Game {
     private Player player1;
@@ -23,118 +22,84 @@ public class Game {
 
         init();
         System.out.println("Rounds starting!");
-        boolean winner = false;
 
         Player current = player1;
         Player enemy = player2;
-        GameState GameState = battleship.GameState.Winner;
 
-        while(!winner)
+        while(true)
         {
-            System.out.println(current.getHits());
-            System.out.println(enemy.getHits());
+            /// 1) Round -----------------------------------------------------------------------------------------------
             ConsoleColors.printStatus("Round of player: " + current.getName());
-            winner = round(current, enemy);
+            boolean currentDestroysAll = round(current, enemy);
 
-            if (winner){
-                GameState = battleship.GameState.Winner;
-                break;
-            }
-            if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
-                if (current.getHits() == enemy.getHits()) {
-                    GameState = battleship.GameState.Draw;
-                    break;
-                } else {
-                    if (current.getHits() > enemy.getHits()){
-                        winner = true;
-                        ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + current + " tuvo mas aciertos!");
-                    } else {
-                        winner = true;
-                        current = enemy;
-                        ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + current + " tuvo mas aciertos!");
-                    }
+            /// 2) Test for endgame edge cases -------------------------------------------------------------------------
+            boolean player1wins = currentDestroysAll && Objects.equals(current.getName(), player1.getName());
+            boolean player2CanDraw = player1.getMap().getAlive().size() == 1;
+            if (player1wins && player2CanDraw)
+            {
+                // Gives player2 last chance to draw the game
+                ConsoleColors.printStage("Ultima oportunidad para el jugador 2");
+                boolean player2draws = round(player2, player1);
+                if (player2draws)
+                {
+                    onGameDraw();
+                    return;
                 }
+                onPlayerWin(current);
+                return;
             }
-            // Swaps players
+
+            // Tests when both player ran out of missiles
+            if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
+
+                // If both players hit the same amount it's a draw
+                if (current.getHits() == enemy.getHits()) {
+                    onGameDraw();
+                    return;
+                }
+
+                // Otherwise, the player with larger hit count wins
+                if (current.getHits() > enemy.getHits()){
+                    ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + current.getName() + " tuvo mas aciertos!");
+                    onPlayerWin(current);
+                } else {
+                    ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + enemy.getName() + " tuvo mas aciertos!");
+                    onPlayerWin(enemy);
+                }
+                return;
+            }
+            /// 3) Swaps players for next round ------------------------------------------------------------------------
             Player temp = current;
             current = enemy;
             enemy = temp;
         }
-        switch (GameState) {
-            case Winner : ConsoleColors.printSuccess("Player: " + current.getName() + " won the match!"); break;
-            default: ConsoleColors.printWarning("Player " + current.getName() + " and player " + enemy.getName() + " tied!");
-        }
-        if (winner)
-            displayWinner();
     }
-    private Shot chooseShip(Player player, String className)
-    {
-        for (Ship ship : player.getMap().getAlive()) {
-            if (ship.getClass().getSimpleName().equals(className)) {
-                if (ship.specialShotLeft > 0) {
-                    ship.setSpecialShotLeft(ship.getSpecialShotLeft()-1);
-                    return ship.getSpecialShot();
-                } else {
-                    ConsoleColors.printWarning("A tu barco no le quedan disparos especiales!");
-                }
-            }
-        }
-        ConsoleColors.printWarning("No tiene barcos de tipo " + className + ". Desplegando disparo puntual.");
-        return new PointShot();
-    }
+
     private boolean round(Player current, Player enemy)
     {
-        if (current.getRemainingShots() == 0){ConsoleColors.printError("No te quedan disparos!"); ;return false;}
-        Shot shot = new PointShot();
+        if (current.getRemainingShots() == 0){
+            ConsoleColors.printError("No te quedan disparos!");
+            return false;
+        }
+
+        // Shoots until current player misses
         boolean hit = true;
         while(hit)
         {
-            boolean validInput = false;
-            while (!validInput) {
-                try {
-                    boolean specialChoose = InputUtils.booleanInput("Quiere usar un disparo especial? (y/n): ");
-                    if (specialChoose) {
-                        int whichSpecial = InputUtils.integerInput("Que barco quiere utilizar? (1: crucero, 2: submarino, 3: buque, 4: portaaviones): ");
-                        switch (whichSpecial) {
-                            case 1:
-                                shot = chooseShip(current, "Cruise");
-                                validInput = true;
-                                break;
-                            case 2:
-                                shot = chooseShip(current, "Submarine");
-                                validInput = true;
-                                break;
-                            case 3:
-                                shot = chooseShip(current, "Vessel");
-                                validInput = true;
-                                break;
-                            case 4:
-                                shot = chooseShip(current, "AircraftCarrier");
-                                validInput = true;
-                                break;
-                            default: throw new IOException();
-                        }
-                    } else { break;}
-                } catch (IOException e) {
-                    ConsoleColors.printError("Seleccione un numero entre 1 y 4.");
-                }
-            }
-            // todo: select shot type
-            //Shot shot = new PointShot();
-            if (shot.getRequiredMissileCount() <= current.getRemainingShots()) {
-                hit = shoot(shot, enemy.getMap());
-                current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
-                ConsoleColors.printWarning("Te quedan "+current.getRemainingShots()+" tiros.");
-            } else {
-                ConsoleColors.printWarning("No tiene tiros suficientes para realizar este disparo."); break;
-            }
+            Shot shot = InputUtils.inputShot(current);
+            hit = shoot(shot, enemy.getMap());
+
+            // Updates remaining shoots
+            current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
+            ConsoleColors.printWarning("Te quedan "+current.getRemainingShots()+" tiros.");
+
+            // If after shooting, all enemy ships were destroyed, current Player wins
             if (hit)
             {
                 int aliveCount = enemy.getMap().getAlive().size();
                 if (aliveCount == 0)
                     return true;
             }
-
         }
         return false;
     }
@@ -164,17 +129,16 @@ public class Game {
         // Shoots
         boolean didHit = shot.shot(targetMap, shoot_column, shoot_row);
 
-        if (didHit)
-        {
-            ConsoleColors.printSuccess("Hit a ship! hit count = " + shot.getHitCount());
-            if (shot.getDestroyedCount() > 0)
-            {
-                ConsoleColors.printSuccess("Destroyed " + shot.getDestroyedCount() + " ships");
-            }
-            // todo: Edge cases
-            return true;
+        if (!didHit) {
+            ConsoleColors.printFailure("Agua!. Tiro fallado.");
+            return false;
         }
-        return false;
+        ConsoleColors.printSuccess("Hit a ship! hit count = " + shot.getHitCount());
+        if (shot.getDestroyedCount() > 0)
+        {
+            ConsoleColors.printSuccess("Destroyed " + shot.getDestroyedCount() + " ships");
+        }
+        return true;
     }
 
     private void init(){
@@ -200,7 +164,8 @@ public class Game {
         // todo ask for ship lengths
         List<Integer> shipLengths = new ArrayList<Integer>();
         shipLengths.add(1);     // 1 ship of length 1
-        shipLengths.add(1);
+        shipLengths.add(1);     // 1 ship of length 1
+        //shipLengths.add(5);
 //        shipLengths.add(2);     // 1 ship of length 2
 //        shipLengths.add(3);     // 1 ship of length 3
 //        shipLengths.add(4);
@@ -210,9 +175,13 @@ public class Game {
         MapLoader.loadPlayerMap(player1, shipLengths);
         MapLoader.loadPlayerMap(player2, shipLengths);
     }
-    private void displayWinner(){
-        System.out.println("Displaying winner");
-        // Displays winner and ends Game
+    private void onGameDraw()
+    {
+        ConsoleColors.printSuccess("Empate!");
     }
 
+    private void onPlayerWin(Player player)
+    {
+        ConsoleColors.printSuccess("Jugador: " + player.getName() + " gana la partida!");
+    }
 }
