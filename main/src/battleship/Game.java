@@ -46,8 +46,6 @@ public class Game {
                         onGameDraw();
                         return;
                     }
-                    onPlayerWin(current);
-                    return;
                 }
                 // Current player wins
                 onPlayerWin(current);
