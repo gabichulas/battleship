@@ -33,22 +33,26 @@ public class Game {
             boolean currentDestroysAll = round(current, enemy);
 
             /// 2) Test for endgame edge cases -------------------------------------------------------------------------
-            boolean player1wins = currentDestroysAll && Objects.equals(current.getName(), player1.getName());
-            boolean player2CanDraw = player1.getMap().getAlive().size() == 1;
-            if (player1wins && player2CanDraw)
-            {
-                // Gives player2 last chance to draw the game
-                ConsoleColors.printStage("Ultima oportunidad para el jugador 2");
-                boolean player2draws = round(player2, player1);
-                if (player2draws)
-                {
-                    onGameDraw();
+
+            if (currentDestroysAll) {
+
+                boolean player1wins = Objects.equals(current.getName(), player1.getName());
+                boolean player2CanDraw = player1.getMap().getAlive().size() == 1;
+                if (player1wins && player2CanDraw) {
+                    // Gives player2 last chance to draw the game
+                    ConsoleColors.printStage("Ultima oportunidad para el jugador 2");
+                    boolean player2draws = round(player2, player1);
+                    if (player2draws) {
+                        onGameDraw();
+                        return;
+                    }
+                    onPlayerWin(current);
                     return;
                 }
+                // Current player wins
                 onPlayerWin(current);
                 return;
             }
-
             // Tests when both player ran out of missiles
             if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
 
@@ -156,7 +160,7 @@ public class Game {
         player2.setName(nameP2);
 
         // todo Ask for ship count
-        int shipCount = 2;
+        int shipCount = 1;
 
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
@@ -164,7 +168,7 @@ public class Game {
         // todo ask for ship lengths
         List<Integer> shipLengths = new ArrayList<Integer>();
         shipLengths.add(1);     // 1 ship of length 1
-        shipLengths.add(1);     // 1 ship of length 1
+        //shipLengths.add(1);     // 1 ship of length 1
         //shipLengths.add(5);
 //        shipLengths.add(2);     // 1 ship of length 2
 //        shipLengths.add(3);     // 1 ship of length 3
