@@ -1,20 +1,19 @@
 package battleship;
 
-import java.io.BufferedReader;
+import javax.swing.*;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
 
 public class MapLoader {
-    public static void loadPlayerMap(Player player, List<Integer> shipLengths){
+    public static void loadPlayerMap(Player player, List<Integer> shipLengths, GUI gui, Player current){
         ConsoleColors.printStage("Loading map of player: " + player.getName());
         // Displays the map and lets the user place each Ship
         Map map = player.getMap();
         for (int shipLength : shipLengths)
         {
             // Creates new ship and places on the map
-            placeShip(map, shipLength);
+            placeShip(map, shipLength, gui, current);
         }
         ConsoleColors.printSuccess("Mapa del jugador " + player.getName() + " cargado correctamente");
 
@@ -23,12 +22,12 @@ public class MapLoader {
 
         // Loads already added ships to the renderer
         for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip);
+            renderer.setAllyShip(allyShip,gui);
 
         renderer.render();
     }
 
-    private static void placeShip(Map map, int shipLength) {
+    private static void placeShip(Map map, int shipLength, GUI gui, Player current) {
         ConsoleColors.printStage("Placing ship of length: " + shipLength);
         Ship ship;
         switch (shipLength)
@@ -54,7 +53,7 @@ public class MapLoader {
 
         // Loads already added ships to the renderer
         for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip);
+            renderer.setAllyShip(allyShip,gui);
 
         renderer.render();
 
@@ -75,16 +74,13 @@ public class MapLoader {
                     //                "Seleccione opción 1, 2, 3: "
                     // );
 
-                    ////////////////// todo:
                     String[] arrayButtons = {"Cambiar Posición ", "Rotar Barco     ", "Guardar Barco   "};
                     GraphicInterface window = new GraphicInterface(" Menu de posicionamiento: ", arrayButtons);
-                    String buttonPressed = window.showWindow(" BattleShip ",600,200,"images/SoldiersInc.jpg");
-                    //System.out.println(" Botón presionado: " + buttonPressed);
-                    //////////////////
+                    String buttonPressed = window.showWindow(" BattleShip ",600,190,"images/SoldiersInc.jpg");
 
                     switch (buttonPressed) {
                         case "Button 1" -> {
-                            inputShipOrigin(ship);
+                            inputShipOrigin(ship, current);
                             validInput = true;
                         }
                         case "Button 2" -> {
@@ -92,7 +88,7 @@ public class MapLoader {
                             validInput = true;
                         }
                         case "Button 3" -> {
-                            if (inputSaveShip(map, ship)) {
+                            if (inputSaveShip(map, ship, gui)) {
                                 return;
                             }
                         }
@@ -146,7 +142,7 @@ public class MapLoader {
         return true;
     }
 
-    private static boolean inputSaveShip(Map map, Ship ship)
+    private static boolean inputSaveShip(Map map, Ship ship, GUI gui)
     {
         boolean validPosition = isValidShip(map, ship);
 
@@ -157,27 +153,46 @@ public class MapLoader {
         // Asks user if it's the desired position
         // boolean wantToPlace = InputUtils.booleanInput("Desea colocar el barco en el cuadrante <" + ship.getOriginRow() + ", " + ship.getOriginColumn() + ">? (y, n): ");
 
-        ////////////////// todo:
         String[] arrayButtons = {"Si ", "No "};
         GraphicInterface window = new GraphicInterface(" ¿Desea colocar el barco en el cuadrante <" + ship.getOriginRow() + ", " + ship.getOriginColumn() + ">?", arrayButtons);
         String buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
-        //System.out.println(" Botón presionado: " + buttonPressed);
-        //////////////////
 
         if (Objects.equals(buttonPressed, "Button 1")){
-            map.addShip(ship);
+            map.addShip(ship, gui);
+        } else { return false;
+
         }
         return true;
     }
-    private static void inputShipOrigin(Ship ship)
+    private static void inputShipOrigin(Ship ship, Player current)
     {
         try
         {
-            GraphicInterfaceMatrixOp window = new GraphicInterfaceMatrixOp(10,10);
-            int[] pos = window.showWindow();
+            int shoot_row;
+            int shoot_column;
 
-            ship.setOriginColumn(pos[0]);
-            ship.setOriginRow(pos[1]);
+            GUI gui = current.getGui();
+            JButton[][] myMatrix = gui.getMyMatrix();
+
+            gui.habilitarMatrizBotones(myMatrix);
+
+            int[] array = {-1, -1};
+            gui.setMiArray(array);
+            while (array[0] == -1 || array[1] == -1) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                array = gui.getMiArray();
+            }
+
+            shoot_row = array[0];
+            shoot_column = array[1];
+
+            ship.setOriginColumn(shoot_column);
+            ship.setOriginRow(shoot_row);
+
         } catch (Exception e)
         {
             ConsoleColors.printError("Posición inválida, debe tener formato: fila columna");
@@ -197,12 +212,9 @@ public class MapLoader {
             //                        "Rotación (1, 2, 3, 4): "
             //);
 
-            ////////////////// todo:
             String[] arrayButtons = {"Horizontal derecha ➡ ", "Horizontal izquierda ⬅ ", "Vertical arriba ⬆ ", "Vertical abajo ⬇ "};
             GraphicInterface window = new GraphicInterface(" Rotación del barco: ",arrayButtons);
             String buttonPressed = window.showWindow(" BattleShip ",700,250,"images/SoldiersInc.jpg");
-            //System.out.println(" Botón presionado: " + buttonPressed);
-            //////////////////
 
             switch (buttonPressed) {
                 case "Button 1" -> {

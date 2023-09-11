@@ -3,9 +3,10 @@ package battleship;
 public class Player {
     private String name;
     private Map map;
+    private GUI gui;
     private int shots;
     private int hits;
-    private int remainingShots = 2;    // (numero provisorio)
+    private int remainingShots = 9;    // (numero provisorio)
 
     // Getters y Setters
 
@@ -32,6 +33,12 @@ public class Player {
     public void setMap(Map map) {
         this.map = map;
     }
+    public GUI getGui() {
+        return gui;
+    }
+    public void setGui(GUI gui) {
+        this.gui = gui;
+    }
 
     public int getShots() {
         return shots;
@@ -51,11 +58,12 @@ public class Player {
 
     // Constructores
 
-    public Player(String name, Map map, int shots, int hits) {
+    public Player(String name, Map map, int shots, int hits, GUI gui) {
         this.name = name;
         this.map = map;
         this.shots = shots;
         this.hits = hits;
+        this.gui = gui;
     }
 
     public Player(){}

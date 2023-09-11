@@ -1,11 +1,14 @@
 package battleship;
 
+import javax.swing.*;
+import java.awt.*;
+
 public abstract class Shot {
     public Shot(int requiredMissileCount)
     {
         this.requiredMissileCount = requiredMissileCount;
     }
-    public abstract boolean shot(Map map, int column, int row);
+    public abstract boolean shot(Map map, int column, int row, GUI gui);
     protected int hitCount;
 
     public int getRequiredMissileCount() {
@@ -24,21 +27,29 @@ class PointShot extends Shot
     {
         super(1);
     }
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, int column, int row, GUI gui)
     {
         Quadrant shootQuadrant = map.getQuadrant(column, row);
         shootQuadrant.setShot(true);
+        JButton[][] Matrix = gui.getEnemyMatrix();
+
         if (shootQuadrant.containsShip())
         {
+
             Ship ship = shootQuadrant.getShip();
             ship.hit();
             hitCount = 1;
+
+            gui.setPaintQuadrant(column, row, Matrix, Color.RED);
 
             if (!ship.isAlive())
                 destroyedCount = 1;
 
             return true;
+        } else {
+            gui.setPaintQuadrant(column, row, Matrix, Color.YELLOW);
         }
+
         return false;
     }
 }
@@ -51,7 +62,7 @@ class HorizontalShot extends Shot
         super(1 + 2 * length);
         this.length = length;
     }
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, int column, int row, GUI gui)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
@@ -61,7 +72,7 @@ class HorizontalShot extends Shot
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, subColumn, row);
+            hitAny |= shot.shot(map, subColumn, row, gui);
 
             hitCount += shot.hitCount;
             destroyedCount += shot.destroyedCount;
@@ -78,7 +89,7 @@ class VerticalShot extends Shot
         super(1 + 2 * length);
         this.length = length;
     }
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, int column, int row, GUI gui)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
@@ -88,7 +99,7 @@ class VerticalShot extends Shot
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, column, subRow);
+            hitAny |= shot.shot(map, column, subRow, gui);
 
             hitCount += shot.hitCount;
             destroyedCount += shot.destroyedCount;
@@ -105,13 +116,13 @@ class CrossShot extends Shot
         super(1 + 2 * length);
         this.length = length;
     }
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, int column, int row, GUI gui)
     {
         boolean hitAny = false;
         HorizontalShot horizontalShot = new HorizontalShot(length);
         VerticalShot verticalShot = new VerticalShot(length);
-        hitAny |= horizontalShot.shot(map, column, row);
-        hitAny |= verticalShot.shot(map, column, row);
+        hitAny |= horizontalShot.shot(map, column, row, gui);
+        hitAny |= verticalShot.shot(map, column, row, gui);
         hitCount += horizontalShot.hitCount;
         hitCount += verticalShot.hitCount;
         destroyedCount += horizontalShot.destroyedCount;
@@ -124,7 +135,7 @@ class SquareShot extends Shot{
         super(9);
     }
     @Override
-    public boolean shot(Map map, int column, int row) {
+    public boolean shot(Map map, int column, int row, GUI gui) {
         boolean hitAny = false;
         int i;
         for (i = row - 1; i<= row + 1; i++ ){
@@ -132,7 +143,7 @@ class SquareShot extends Shot{
                 continue;
             }
             HorizontalShot horizontalShot = new HorizontalShot(1);
-            hitAny |= horizontalShot.shot(map, column, i);
+            hitAny |= horizontalShot.shot(map, column, i, gui);
             hitCount += horizontalShot.hitCount;
             destroyedCount += horizontalShot.destroyedCount;
         }

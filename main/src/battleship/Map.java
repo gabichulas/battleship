@@ -1,6 +1,9 @@
 package battleship;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 
 public class Map {
@@ -70,7 +73,7 @@ public class Map {
         }
         return destroyedShips;
     }
-    public void addShip(Ship ship)
+    public void addShip(Ship ship, GUI gui)
     {
         int quadrantColumn = ship.getOriginColumn();
         int quadrantRow = ship.getOriginRow();

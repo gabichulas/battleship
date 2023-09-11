@@ -1,5 +1,7 @@
 package battleship;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
@@ -45,7 +47,6 @@ public class MapRenderer
     {
         renderMap[column][row] = QuadrantState.ShipDestroyed;
     }
-
     public void setHitQuadrant(int column, int row)
     {
         renderMap[column][row] = QuadrantState.ShipHit;
@@ -73,7 +74,6 @@ public class MapRenderer
         else
             writer.write(edgeNumbersColor + n + " "+ ConsoleColors.RESET);
     }
-
     public void render() {
         int columns = renderMap.length;
         int rows = renderMap[0].length;
@@ -127,7 +127,7 @@ public class MapRenderer
         }
     }
 
-    public void setAllyShip(Ship ship)
+    public void setAllyShip(Ship ship,GUI gui)
     {
         int quadrantColumn = ship.getOriginColumn();
         int quadrantRow = ship.getOriginRow();
@@ -135,6 +135,8 @@ public class MapRenderer
         // NOTE: It doesn't check for valid position
         for (int i = 0; i < ship.getLength(); i++) {
 
+            JButton[][] myMatrix = gui.getMyMatrix();
+            gui.setPaintQuadrant(quadrantColumn, quadrantRow,myMatrix, Color.GREEN);
             setAllyQuadrant(quadrantColumn, quadrantRow);
             // Moves to next Quadrant
             quadrantColumn += ship.getOrientationDx();
