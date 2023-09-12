@@ -74,20 +74,20 @@ public class MapLoader {
                     //                "Seleccione opción 1, 2, 3: "
                     // );
 
-                    String[] arrayButtons = {"Cambiar Posición ", "Rotar Barco     ", "Guardar Barco   "};
+                    String[] arrayButtons = {"1: Cambiar Posición ", "2: Rotar Barco     ", "3: Guardar Barco   "};
                     GraphicInterface window = new GraphicInterface(" Menu de posicionamiento: ", arrayButtons);
-                    String buttonPressed = window.showWindow(" BattleShip ",600,190,"images/SoldiersInc.jpg");
+                    int buttonPressed = window.showWindow(" BattleShip ",600,190,"images/SoldiersInc.jpg");
 
                     switch (buttonPressed) {
-                        case "Button 1" -> {
+                        case 1 -> {
                             inputShipOrigin(ship, current);
                             validInput = true;
                         }
-                        case "Button 2" -> {
+                        case 2 -> {
                             inputShipRotation(ship);
                             validInput = true;
                         }
-                        case "Button 3" -> {
+                        case 3 -> {
                             if (inputSaveShip(map, ship, gui)) {
                                 return;
                             }
@@ -153,11 +153,11 @@ public class MapLoader {
         // Asks user if it's the desired position
         // boolean wantToPlace = InputUtils.booleanInput("Desea colocar el barco en el cuadrante <" + ship.getOriginRow() + ", " + ship.getOriginColumn() + ">? (y, n): ");
 
-        String[] arrayButtons = {"Si ", "No "};
+        String[] arrayButtons = {"1: Si ", "2: No "};
         GraphicInterface window = new GraphicInterface(" ¿Desea colocar el barco en el cuadrante <" + ship.getOriginRow() + ", " + ship.getOriginColumn() + ">?", arrayButtons);
-        String buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
+        int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
 
-        if (Objects.equals(buttonPressed, "Button 1")){
+        if (buttonPressed == 1){
             map.addShip(ship, gui);
         } else { return false;
 
@@ -174,7 +174,7 @@ public class MapLoader {
             GUI gui = current.getGui();
             JButton[][] myMatrix = gui.getMyMatrix();
 
-            gui.habilitarMatrizBotones(myMatrix);
+            gui.enableArrayButtons(myMatrix);
 
             int[] array = {-1, -1};
             gui.setMiArray(array);
@@ -212,30 +212,30 @@ public class MapLoader {
             //                        "Rotación (1, 2, 3, 4): "
             //);
 
-            String[] arrayButtons = {"Horizontal derecha ➡ ", "Horizontal izquierda ⬅ ", "Vertical arriba ⬆ ", "Vertical abajo ⬇ "};
+            String[] arrayButtons = {"1: Horizontal derecha ➡ ", "2: Horizontal izquierda ⬅ ", "3: Vertical arriba ⬆ ", "4: Vertical abajo ⬇ "};
             GraphicInterface window = new GraphicInterface(" Rotación del barco: ",arrayButtons);
-            String buttonPressed = window.showWindow(" BattleShip ",700,250,"images/SoldiersInc.jpg");
+            int buttonPressed = window.showWindow(" BattleShip ",700,250,"images/SoldiersInc.jpg");
 
             switch (buttonPressed) {
-                case "Button 1" -> {
+                case 1 -> {
                     ship.setOrientationDx(1);
                     ship.setOrientationDy(0);
                     ConsoleColors.printStatus("Barco rotado ➡");
                     validInput = true;
                 }
-                case "Button 2" -> {
+                case 2 -> {
                     ship.setOrientationDx(-1);
                     ship.setOrientationDy(0);
                     ConsoleColors.printStatus("Barco rotado ⬅");
                     validInput = true;
                 }
-                case "Button 3" -> {
+                case 3 -> {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(-1);
                     ConsoleColors.printStatus("Barco rotado ⬆");
                     validInput = true;
                 }
-                case "Button 4" -> {
+                case 4 -> {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(1);
                     ConsoleColors.printStatus("Barco rotado ⬇");

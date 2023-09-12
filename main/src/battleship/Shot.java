@@ -15,7 +15,7 @@ public abstract class Shot {
         return requiredMissileCount;
     }
 
-    private int requiredMissileCount;
+    private final int requiredMissileCount;
     protected int destroyedCount;
     int getHitCount() { return hitCount; }
     int getDestroyedCount() { return destroyedCount; }
@@ -31,23 +31,27 @@ class PointShot extends Shot
     {
         Quadrant shootQuadrant = map.getQuadrant(column, row);
         shootQuadrant.setShot(true);
+        
         JButton[][] Matrix = gui.getEnemyMatrix();
 
         if (shootQuadrant.containsShip())
         {
 
             Ship ship = shootQuadrant.getShip();
+            if (!ship.isAlive())
+                return false;
+
             ship.hit();
             hitCount = 1;
 
-            gui.setPaintQuadrant(column, row, Matrix, Color.RED);
+            gui.PaintQuadrant(column, row, Matrix, Color.RED);
 
             if (!ship.isAlive())
                 destroyedCount = 1;
 
             return true;
         } else {
-            gui.setPaintQuadrant(column, row, Matrix, Color.YELLOW);
+            gui.PaintQuadrant(column, row, Matrix, Color.GRAY);
         }
 
         return false;
@@ -56,7 +60,7 @@ class PointShot extends Shot
 
 class HorizontalShot extends Shot
 {
-    private int length;
+    private final int length;
     public HorizontalShot(int length)
     {
         super(1 + 2 * length);
@@ -83,7 +87,7 @@ class HorizontalShot extends Shot
 
 class VerticalShot extends Shot
 {
-    private int length;
+    private final int length;
     public VerticalShot(int length)
     {
         super(1 + 2 * length);

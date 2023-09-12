@@ -136,7 +136,7 @@ public class MapRenderer
         for (int i = 0; i < ship.getLength(); i++) {
 
             JButton[][] myMatrix = gui.getMyMatrix();
-            gui.setPaintQuadrant(quadrantColumn, quadrantRow,myMatrix, Color.GREEN);
+            gui.PaintQuadrant(quadrantColumn, quadrantRow,myMatrix, Color.GREEN);
             setAllyQuadrant(quadrantColumn, quadrantRow);
             // Moves to next Quadrant
             quadrantColumn += ship.getOrientationDx();

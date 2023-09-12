@@ -93,7 +93,9 @@ public class ConsoleColors {
     public static void printSuccess(String msg) {
         System.out.println(BLACK + GREEN_BACKGROUND + msg + RESET);
     }
-
+    public static void printFailure(String msg) {
+        System.out.println(BLACK + RED_BACKGROUND + msg + RESET);
+    }
     public static void printStage(String msg) {
         System.out.println(WHITE_BACKGROUND + msg + RESET);
     }

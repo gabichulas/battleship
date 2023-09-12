@@ -28,7 +28,6 @@ public class GUI {
     private JButton[][] enemyMatrix;
     private int[] miArray;
 
-    // Método para habilitar la matriz de botones
 
     //public void habilitarMatrizBotones1(JPanel matriz) {
     //    matriz.setEnabled(true);
@@ -36,106 +35,111 @@ public class GUI {
     //public void deshabilitarMatrizBotones1(JPanel matriz) {
     //    matriz.setEnabled(false);
     //}
-    public void habilitarMatrizBotones(JButton[][] matriz) {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j].setEnabled(true);
-            }
-        }
-    }
 
-    // Método para deshabilitar la matriz de botones
-    public void deshabilitarMatrizBotones(JButton[][] matriz) {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j].setEnabled(false);
-            }
-        }
-    }
-
-    ////
     public GUI() {
         initializeMyPanelMatrix();
         initializePanelEnemyMatrix();
     }
-
     private void initializeMyPanelMatrix() {
-        int rows = 10; // Número de filas en la matriz
-        int cols = 10; // Número de columnas en la matriz
-        myMatrix = new JButton[10][10];
+        int rows = 10;
+        int cols = 10;
 
+        myMatrix = new JButton[10][10];
         myPanelMatrix.setLayout(new GridLayout(rows, cols));
 
-        // Crear y agregar botones a myPanelMatrix
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 JButton button = new JButton();
                 myPanelMatrix.add(button);
                 button.setEnabled(false);
-                //button.setBackground(Color.BLUE);
                 myMatrix[i][j] = button;
-                final int row = i; // Almacena la fila actual en una variable final
-                final int col = j; // Almacena la columna actual en una variable final
+                final int row = i;
+                final int col = j;
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // Acción que se ejecuta cuando se presiona un botón en myMatrix
-                        // Puedes identificar la fila y columna del botón presionado
-                        // utilizando las variables 'row' y 'col'
                         int[] nuevoArray = {row, col};
                         setMiArray(nuevoArray);
-                        //button.setBackground(Color.RED);
-                        deshabilitarMatrizBotones(myMatrix);
+                        disableArrayButtons(myMatrix);
                     }
                 });
                 setMyMatrix(myMatrix);
             }
         }
     }
-
     private void initializePanelEnemyMatrix() {
-        int rows = 10; // Número de filas en la matriz
-        int cols = 10; // Número de columnas en la matriz
-        enemyMatrix = new JButton[10][10];
+        int rows = 10;
+        int cols = 10;
 
+        enemyMatrix = new JButton[10][10];
         panelEnemyMatrix.setLayout(new GridLayout(rows, cols));
 
-        // Crear y agregar botones a panelEnemyMatrix
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 JButton button = new JButton();
                 button.setEnabled(false);
-                //button.setBackground(Color.BLUE);
 
                 panelEnemyMatrix.add(button);
                 enemyMatrix[i][j] = button;
-                final int row = i; // Almacena la fila actual en una variable final
-                final int col = j; // Almacena la columna actual en una variable final
+                final int row = i;
+                final int col = j;
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        // Acción que se ejecuta cuando se presiona un botón en enemyMatrix
-                        // Puedes identificar la fila y columna del botón presionado
-                        // utilizando las variables 'row' y 'col'
                         int[] nuevoArray = {row, col};
                         setMiArray(nuevoArray);
-                        //button.setBackground(Color.RED);
-                        deshabilitarMatrizBotones(enemyMatrix);
+                        disableArrayButtons(enemyMatrix);
                     }
                 });
                 setEnemyMatrix(enemyMatrix);
             }
         }
     }
+    public void enableArrayButtons(JButton[][] matriz) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                matriz[i][j].setEnabled(true);
+            }
+        }
+    }
+    public void disableArrayButtons(JButton[][] matriz) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                matriz[i][j].setEnabled(false);
+            }
+        }
+    }
+    public static GUI initializeJFrame(String textTittle, int x, int y){
+        JFrame frame = new JFrame(textTittle);
+        GUI gui = new GUI();
+        frame.setContentPane(gui.panelBase);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocation(x,y);
+        frame.setVisible(true);
+        return gui;
+    }
+    public void PaintQuadrant(int column, int row, JButton[][] Matrix, Color color) {
+        Matrix[row][column].setBackground(color);
+    }
+    public static void duoDisplayConsole(GUI guiP1, GUI guiP2, String text, Color color){
+        singleDisplayConsole(guiP1,text,color);
+        singleDisplayConsole(guiP2,text,color);
+    }
+    public static void singleDisplayConsole(GUI gui, String text,Color color){
+        JLabel textConsole = gui.getTextConsole();
 
+        textConsole.setText(text);
+        gui.setTextConsole(textConsole);
+        textConsole.setForeground(color);
+    }
+    public static void singleDisplayCount(GUI gui, String text,Color color){
+        JLabel textConsoleShoot = gui.getTextCountShoot();
 
-    //public JButton getButton(int fila, int columna) {
-    //    return matrix[fila][columna];
-    //}
-
-    //public void setButton(int fila, int columna, JButton button) {
-    //    matrix[fila][columna] = button;
-    //}
+        textConsoleShoot.setText(text);
+        gui.setTextCountShoot(textConsoleShoot);
+        textConsoleShoot.setForeground(color);
+    }
 
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;
@@ -161,7 +165,6 @@ public class GUI {
     public void setTextCountShoot(JLabel textCountShoot) {
         this.textCountShoot = textCountShoot;
     }
-
     public int[] getMiArray() {
         return miArray;
     }
@@ -169,58 +172,17 @@ public class GUI {
         this.miArray = miArray;
     }
 
+    //public JButton getButton(int fila, int columna) {
+    //    return matrix[fila][columna];
+    //}
+    //public void setButton(int fila, int columna, JButton button) {
+    //    matrix[fila][columna] = button;
+    //}
+
     //public JPanel getMyPanelMatrix() {
     //    return myPanelMatrix;
     //}
     //public void setMyPanelMatrix(JPanel myPanelMatrix) {
     //    this.myPanelMatrix = myPanelMatrix;
     //}
-
-    public void setPaintQuadrant(int column, int row, JButton[][] Matrix, Color color)
-    {
-        Matrix[row][column].setBackground(color);
-    }
-
-    public static void main(String[] args) {
-        //JFrame frame = new JFrame("Battleship");
-        //GUI gui = new GUI();
-        //frame.setContentPane(gui.panelBase);
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.pack();
-        //frame.setVisible(true);
-//
-        //JButton[][] myMatrix = gui.getMyMatrix();
-        //myMatrix[1][1].setBackground(Color.GREEN);
-        //myMatrix[0][1].setBackground(Color.GREEN);
-        //myMatrix[4][4].setBackground(Color.GREEN);
-//
-        //JButton[][] enemyMatrix = gui.getEnemyMatrix();
-        //enemyMatrix[1][3].setBackground(Color.RED);
-//
-        ////
-        //gui.habilitarMatrizBotones(myMatrix);
-        //int[] array = {-1, -1};
-        //gui.setMiArray(array);
-        //while (array[0] == -1 || array[1] == -1) {
-        //    try {
-        //        Thread.sleep(100); // Espera durante 100 milisegundos
-        //    } catch (InterruptedException e) {
-        //        e.printStackTrace();
-        //    }
-        //    array = gui.getMiArray();
-        //}
-//
-        //int fila = array[0];
-        //int columna = array[1];
-        //System.out.println("Botón en fila: " + fila + ", columna: " + columna + " presionado");
-        ////
-
-
-
-
-
-        //JButton[][] myMatrix = gui.getMyMatrix();
-        //gui.setPaintQuadrant(column, row,myMatrix, Color.RED);
-
-    }
 }

@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class GraphicInterface extends JPanel {
     private String imageURL; // URL de la imagen de fondo
-    private String buttonPressed; // Botón presionado por el usuario
+    private int buttonPressed; // Botón presionado por el usuario
     private JFrame window; // Ventana principal
 
     // Constructor de la interfaz gráfica
@@ -41,14 +41,14 @@ public class GraphicInterface extends JPanel {
     // Método para agregar botones a la interfaz
     private void addButtons(String[] arrayButtons) {
         for (int i = 0; i < arrayButtons.length; i++) {
-            addButton(String.valueOf(arrayButtons[i]), "Button " + (i + 1));
+            addButton(String.valueOf(arrayButtons[i]),  (i + 1));
             add(Box.createVerticalStrut(5)); // Espacio vertical
         }
         add(Box.createVerticalStrut(15)); // Espacio vertical
     }
 
     // Método para agregar un botón a la interfaz
-    private void addButton(String text, final String buttonName) {
+    private void addButton(String text, final int buttonName) {
         JButton button = new JButton(text);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -77,16 +77,16 @@ public class GraphicInterface extends JPanel {
         this.imageURL = imageURL;
     }
 
-    public String getButtonPressed() {
+    public int getButtonPressed() {
         return buttonPressed;
     }
 
-    public void setButtonPressed(String buttonPressed) {
+    public void setButtonPressed(int buttonPressed) {
         this.buttonPressed = buttonPressed;
     }
 
     // Método para mostrar la ventana
-    public String showWindow(String title, int width, int height, String ImageURL) {
+    public int showWindow(String title, int width, int height, String ImageURL) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setContentPane(this);
