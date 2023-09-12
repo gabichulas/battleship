@@ -31,7 +31,7 @@ class PointShot extends Shot
     {
         Quadrant shootQuadrant = map.getQuadrant(column, row);
         shootQuadrant.setShot(true);
-        
+
         JButton[][] Matrix = gui.getEnemyMatrix();
 
         if (shootQuadrant.containsShip())
