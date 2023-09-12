@@ -24,17 +24,10 @@ public class GUI {
     private JPanel panelConsole;
     private JLabel textConsole;
     private JLabel textCountShoot;
+    private JLabel textConsole0;
     private JButton[][] myMatrix;
     private JButton[][] enemyMatrix;
     private int[] miArray;
-
-
-    //public void habilitarMatrizBotones1(JPanel matriz) {
-    //    matriz.setEnabled(true);
-    //}
-    //public void deshabilitarMatrizBotones1(JPanel matriz) {
-    //    matriz.setEnabled(false);
-    //}
 
     public GUI() {
         initializeMyPanelMatrix();
@@ -140,6 +133,12 @@ public class GUI {
         gui.setTextCountShoot(textConsoleShoot);
         textConsoleShoot.setForeground(color);
     }
+    //public void habilitarMatrizBotones1(JPanel matriz) {
+    //    matriz.setEnabled(true);
+    //}
+    //public void deshabilitarMatrizBotones1(JPanel matriz) {
+    //    matriz.setEnabled(false);
+    //}
 
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;

@@ -108,7 +108,7 @@ public class Game {
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
 
             ConsoleColors.printWarning("TE QUEDAN " + current.getRemainingShots() +" TIROS"); // consola
-            GUI.singleDisplayCount(current.getGui(), " TE QUEDAN " + current.getRemainingShots() + " TIROS",Color.WHITE);
+            GUI.singleDisplayCount(current.getGui(), "CONTADOR DE DISPAROS: "+ current.getRemainingShots() ,Color.white);
 
             // If after shooting, all enemy ships were destroyed, current Player wins
             if (hit)
@@ -195,7 +195,7 @@ public class Game {
         //int shipCount = 3;
 
         GUI guiPlayer1 = GUI.initializeJFrame("BATALLA NAVAL PLAYER 1: " + nameP1,100,50);
-        GUI guiPlayer2 = GUI.initializeJFrame("BATALLA NAVAL PLAYER 2: " + nameP1,700,50);
+        GUI guiPlayer2 = GUI.initializeJFrame("BATALLA NAVAL PLAYER 2: " + nameP2,700,50);
 
         player1.setGui(guiPlayer1);
         player2.setGui(guiPlayer2);
