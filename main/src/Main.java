@@ -1,4 +1,4 @@
-import battleship.GUI;
+
 import battleship.Game;
 import battleship.GraphicInterface;
 

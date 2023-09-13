@@ -36,7 +36,6 @@ class PointShot extends Shot
 
         if (shootQuadrant.containsShip())
         {
-
             Ship ship = shootQuadrant.getShip();
             if (!ship.isAlive())
                 return false;
@@ -45,15 +44,11 @@ class PointShot extends Shot
             hitCount = 1;
 
             gui.PaintQuadrant(column, row, Matrix, Color.RED);
-
             if (!ship.isAlive())
                 destroyedCount = 1;
-
             return true;
-        } else {
-            gui.PaintQuadrant(column, row, Matrix, Color.GRAY);
         }
-
+        gui.PaintQuadrant(column, row, Matrix, Color.GRAY);
         return false;
     }
 }

@@ -6,7 +6,7 @@ public class Player {
     private GUI gui;
     private int shots;
     private int hits;
-    private int remainingShots = 20;    // (numero provisorio)
+    private int remainingShots = 30;    // (numero provisorio)
 
 
     // Getters y Setters

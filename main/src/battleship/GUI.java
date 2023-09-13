@@ -24,7 +24,6 @@ public class GUI {
     private JPanel panelConsole;
     private JLabel textConsole;
     private JLabel textCountShoot;
-    private JLabel textConsole0;
     private JButton[][] myMatrix;
     private JButton[][] enemyMatrix;
     private int[] miArray;

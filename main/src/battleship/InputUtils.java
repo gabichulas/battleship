@@ -133,7 +133,7 @@ public class InputUtils {
         return name;
     }
 
-    public static int inputNum(String text) {
+    public static int inputNum(String text, int numFinal) {
         int num;
         do {
             String inputP1 = JOptionPane.showInputDialog(text);
@@ -147,7 +147,7 @@ public class InputUtils {
             } catch (NumberFormatException e) {
                 num = -1; // Valor no válido
             }
-        } while (num <= 0 || num >= 10);
+        } while (num <= 0 || num > numFinal);
         return num;
     }
 

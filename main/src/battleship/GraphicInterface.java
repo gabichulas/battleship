@@ -68,24 +68,6 @@ public class GraphicInterface extends JPanel {
         g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
-    // Métodos getter y setter para imageURL y buttonPressed
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public int getButtonPressed() {
-        return buttonPressed;
-    }
-
-    public void setButtonPressed(int buttonPressed) {
-        this.buttonPressed = buttonPressed;
-    }
-
-    // Método para mostrar la ventana
     public int showWindow(String title, int width, int height, String ImageURL) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,5 +96,22 @@ public class GraphicInterface extends JPanel {
 
         return getButtonPressed(); // Devuelve el botón presionado por el usuario
     }
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public int getButtonPressed() {
+        return buttonPressed;
+    }
+
+    public void setButtonPressed(int buttonPressed) {
+        this.buttonPressed = buttonPressed;
+    }
+
+
 }
 

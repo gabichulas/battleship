@@ -191,7 +191,7 @@ public class Game {
         player1.setName(nameP1);
         player2.setName(nameP2);
 
-        int shipCount = InputUtils.inputNum("INGRESE CANTIDAD DE BARCOS");
+        int shipCount = InputUtils.inputNum("INGRESE CANTIDAD DE BARCOS", 5);
         //int shipCount = 3;
 
         GUI guiPlayer1 = GUI.initializeJFrame("BATALLA NAVAL PLAYER 1: " + nameP1,100,50);
@@ -203,16 +203,21 @@ public class Game {
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
 
-        GUI.singleDisplayCount(player1.getGui(), "CONTADOR DE DISPAROS: "+ player1.getRemainingShots() ,Color.white);
-        GUI.singleDisplayCount(player2.getGui(), "CONTADOR DE DISPAROS: "+ player2.getRemainingShots() ,Color.white);
+        GUI.singleDisplayCount(player1.getGui(), "CONTADOR DE DISPAROS: " + player1.getRemainingShots() ,Color.white);
+        GUI.singleDisplayCount(player2.getGui(), "CONTADOR DE DISPAROS: " + player2.getRemainingShots() ,Color.white);
 
         // todo ask for ship lengths
         List<Integer> shipLengths = new ArrayList<Integer>();
-        shipLengths.add(1);     // 1 ship of length 1
-        shipLengths.add(2);     // 1 ship of length 2
-        shipLengths.add(3);     // 1 ship of length 3
-//        shipLengths.add(4);    // 1 ship of length 4
-//        shipLengths.add(5);    // 1 ship of length 5
+
+        for (int i = 1; i <= shipCount; i++) {
+            shipLengths.add(i);     // 1 ship of length 1
+        }
+
+        //shipLengths.add(1);     // 1 ship of length 1
+        //shipLengths.add(2);     // 1 ship of length 2
+        //shipLengths.add(3);     // 1 ship of length 3
+        //shipLengths.add(4);     // 1 ship of length 4
+        //shipLengths.add(5);     // 1 ship of length 5
 
         // Loads maps
         MapLoader.loadPlayerMap(player1, shipLengths, player1.getGui(), player1);
