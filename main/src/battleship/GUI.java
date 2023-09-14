@@ -11,12 +11,8 @@ public class GUI {
     private JPanel panelButtonOptions;
     private JPanel panelEnemyMatrix;
     private JPanel myPanelMatrix;
-    private JPanel shootsPanel;
+    private JPanel shotsPanel;
     private JLabel textForButtomOptions;
-    private JButton shoot1;
-    private JButton shoot2;
-    private JButton shoot3;
-    private JButton shoot4;
     private JPanel panelVerticalNum1;
     private JPanel panelHorizontalNum;
     private JPanel panelVerticalNum2;
@@ -24,13 +20,50 @@ public class GUI {
     private JPanel panelConsole;
     private JLabel textConsole;
     private JLabel textCountShoot;
+    private JPanel buttonConteiner;
     private JButton[][] myMatrix;
     private JButton[][] enemyMatrix;
     private int[] miArray;
+    private JButton[] arrayButton;
+    private int buttonShotPresed;
 
     public GUI() {
         initializeMyPanelMatrix();
         initializePanelEnemyMatrix();
+        initializePanelShots();
+    }
+    private void initializePanelShots() {
+        int rows = 5;
+        arrayButton = new JButton[rows];
+        buttonConteiner.setLayout(new GridLayout(rows, 1));
+        for (int i = 0; i < rows; i++) {
+            JButton button = new JButton();
+            button.setBackground(Color.gray);
+            switch (i+1){
+                case 1: button.setText("TIRO UNICO");
+                    break;
+                case 2: button.setText("TIRO HORIZONTAL");
+                    break;
+                case 3: button.setText("TIRO VERTICAL");
+                    break;
+                case 4: button.setText("TIRO CRUZADO");
+                    break;
+                case 5: button.setText("TIRO CUADRADO");
+                    break;
+            }
+            buttonConteiner.add(button);
+            button.setEnabled(false);
+            arrayButton[i] = button;
+            final int row = i;
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setButtonShotPresed(row);
+                    disableShotsButtons(arrayButton);
+                }
+            });
+            setArrayButtonShot(arrayButton);
+        }
     }
     private void initializeMyPanelMatrix() {
         int rows = 10;
@@ -52,7 +85,7 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         int[] nuevoArray = {row, col};
                         setMiArray(nuevoArray);
-                        disableArrayButtons(myMatrix);
+                        disableMatrixButtons(myMatrix);
                     }
                 });
                 setMyMatrix(myMatrix);
@@ -80,24 +113,36 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         int[] nuevoArray = {row, col};
                         setMiArray(nuevoArray);
-                        disableArrayButtons(enemyMatrix);
+                        disableMatrixButtons(enemyMatrix);
                     }
                 });
                 setEnemyMatrix(enemyMatrix);
             }
         }
     }
-    public void enableArrayButtons(JButton[][] matriz) {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j].setEnabled(true);
+
+    public void enableShotsButtons(JButton[] Array) {
+        for (int i = 0; i < Array.length; i++) {
+            Array[i].setEnabled(true);
+        }
+    }
+    public void disableShotsButtons(JButton[] Array) {
+        for (int i = 0; i < Array.length; i++) {
+            Array[i].setEnabled(false);
+        }
+    }
+
+    public void enableMatrixButtons(JButton[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j].setEnabled(true);
             }
         }
     }
-    public void disableArrayButtons(JButton[][] matriz) {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                matriz[i][j].setEnabled(false);
+    public void disableMatrixButtons(JButton[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                matrix[i][j].setEnabled(false);
             }
         }
     }
@@ -132,12 +177,6 @@ public class GUI {
         gui.setTextCountShoot(textConsoleShoot);
         textConsoleShoot.setForeground(color);
     }
-    //public void habilitarMatrizBotones1(JPanel matriz) {
-    //    matriz.setEnabled(true);
-    //}
-    //public void deshabilitarMatrizBotones1(JPanel matriz) {
-    //    matriz.setEnabled(false);
-    //}
 
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;
@@ -169,18 +208,17 @@ public class GUI {
     public void setMiArray(int[] miArray) {
         this.miArray = miArray;
     }
+    public int getButtonShotPresed() {
+        return buttonShotPresed;
+    }
+    public void setButtonShotPresed(int buttonShotPresed) {
+        this.buttonShotPresed = buttonShotPresed;
+    }
+    public JButton[] getArrayButtonShot() {
+        return arrayButton;
+    }
+    public void setArrayButtonShot(JButton[] arrayButton) {
+        this.arrayButton = arrayButton;
+    }
 
-    //public JButton getButton(int fila, int columna) {
-    //    return matrix[fila][columna];
-    //}
-    //public void setButton(int fila, int columna, JButton button) {
-    //    matrix[fila][columna] = button;
-    //}
-
-    //public JPanel getMyPanelMatrix() {
-    //    return myPanelMatrix;
-    //}
-    //public void setMyPanelMatrix(JPanel myPanelMatrix) {
-    //    this.myPanelMatrix = myPanelMatrix;
-    //}
 }

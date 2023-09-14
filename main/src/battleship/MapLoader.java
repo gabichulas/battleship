@@ -86,15 +86,6 @@ public class MapLoader {
             while (!validInput) {
                 try {
 
-                    // ConsoleColors.printStatus("Barco en cuadrante <" + ship.getOriginRow() + ", " + ship.getOriginColumn() + ">");
-                    // int option = InputUtils.integerInput(
-                    //        "Menu de posicionamiento: \n" +
-                    //                "    1. Cambiar posición\n" +
-                    //                "    2. Rotar barco\n" +
-                    //                "    3. Guardar barco\n" +
-                    //                "Seleccione opción 1, 2, 3: "
-                    // );
-
                     String[] arrayButtons = {"1: Cambiar Posición ", "2: Rotar Barco     ", "3: Guardar Barco   "};
                     GraphicInterface window = new GraphicInterface(" Menu de posicionamiento: ", arrayButtons);
                     int buttonPressed = window.showWindow(" BattleShip ",600,190,"images/SoldiersInc.jpg");
@@ -216,7 +207,7 @@ public class MapLoader {
             GUI gui = current.getGui();
             JButton[][] myMatrix = gui.getMyMatrix();
 
-            gui.enableArrayButtons(myMatrix);
+            gui.enableMatrixButtons(myMatrix);
 
             int[] array = {-1, -1};
             gui.setMiArray(array);
@@ -249,15 +240,6 @@ public class MapLoader {
 
         boolean validInput = false;
         while (!validInput) {
-
-            //int orientation = InputUtils.integerInput(
-            //                "Rotación del barco: \n" +
-            //                        "    1. Horizontal derecha ➡\n" +
-            //                        "    2. Horizontal izquierda ⬅\n" +
-            //                        "    3. Vertical arriba ⬆\n" +
-            //                        "    4. Vertical abajo ⬇\n" +
-            //                        "Rotación (1, 2, 3, 4): "
-            //);
 
             String[] arrayButtons = {"1: Horizontal derecha ➡ ", "2: Horizontal izquierda ⬅ ", "3: Vertical arriba ⬆ ", "4: Vertical abajo ⬇ "};
             GraphicInterface window = new GraphicInterface(" Rotación del barco: ",arrayButtons);

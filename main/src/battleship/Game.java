@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Clase que controla todo lo referido al juego.
+ * Clase que controla _todo lo referido al juego.
  *
  * @version 1.0, 21/09/2023
  * @author Lopez, Lucero, Yudica
@@ -158,7 +158,7 @@ public class Game {
         JButton[][] enemyMatrix = gui.getEnemyMatrix();
 
         do {
-            gui.enableArrayButtons(enemyMatrix);
+            gui.enableMatrixButtons(enemyMatrix);
             int[] array = {-1, -1};
             gui.setMiArray(array);
             while (array[0] == -1 || array[1] == -1) {
@@ -239,7 +239,7 @@ public class Game {
         List<Integer> shipLengths = new ArrayList<Integer>();
 
         for (int i = 1; i <= shipCount; i++) {
-            shipLengths.add(i);     // 1 ship of length 1
+            shipLengths.add(i);
         }
 
         //shipLengths.add(1);     // 1 ship of length 1

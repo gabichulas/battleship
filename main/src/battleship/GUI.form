@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="battleship.GUI">
-  <grid id="27dc6" binding="panelBase" layout-manager="GridLayoutManager" row-count="11" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="panelBase" layout-manager="GridLayoutManager" row-count="11" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="-1" width="780" height="878"/>
+      <xy x="20" y="-1" width="800" height="813"/>
     </constraints>
     <properties>
       <background color="-11698794"/>
@@ -59,7 +59,7 @@
         <border type="none"/>
         <children/>
       </grid>
-      <grid id="e5c05" binding="shootsPanel" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="e5c05" binding="shotsPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -69,70 +69,34 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="3fbfe" class="javax.swing.JButton" binding="shoot1">
+          <grid id="60da4" binding="buttonConteiner" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <text value="shoot1"/>
-            </properties>
-          </component>
-          <component id="9209e" class="javax.swing.JButton" binding="shoot2">
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </grid>
+          <vspacer id="e1afe">
             <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <text value="shoot4"/>
-            </properties>
-          </component>
-          <component id="5e39b" class="javax.swing.JButton" binding="shoot3">
+          </vspacer>
+          <vspacer id="60bfd">
             <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <text value="shoot2"/>
-            </properties>
-          </component>
-          <component id="f7131" class="javax.swing.JButton" binding="shoot4">
+          </vspacer>
+          <hspacer id="24345">
             <constraints>
-              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <text value="shoot3"/>
-            </properties>
-          </component>
-          <component id="de722" class="javax.swing.JLabel">
+          </hspacer>
+          <hspacer id="6415e">
             <constraints>
-              <grid row="0" column="2" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties>
-              <text value="-"/>
-            </properties>
-          </component>
-          <component id="62c7a" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="-"/>
-            </properties>
-          </component>
-          <component id="8e8de" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="6" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="-"/>
-            </properties>
-          </component>
-          <component id="8993" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="-"/>
-            </properties>
-          </component>
+          </hspacer>
         </children>
       </grid>
       <hspacer id="3c4b3">
@@ -152,7 +116,7 @@
         <properties>
           <background color="-393219"/>
           <foreground color="-393219"/>
-          <text value="BattleShip"/>
+          <text value="BATALLA NAVAL"/>
         </properties>
       </component>
       <grid id="e71d2" binding="panelVerticalNum1" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -475,6 +439,11 @@
         <border type="none"/>
         <children/>
       </grid>
+      <vspacer id="922ef">
+        <constraints>
+          <grid row="2" column="6" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
     </children>
   </grid>
 </form>

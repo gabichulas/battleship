@@ -1,6 +1,7 @@
 package battleship;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -86,20 +87,42 @@ public class InputUtils {
             try {
 
                 // Gives player the option of choosing any ship to shoot
-                String[] arrayButtons = {"1: Si ", "2: No "};
-                GraphicInterface window = new GraphicInterface("Quiere usar un disparo especial? ",arrayButtons);
-                int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
 
-                if (buttonPressed == 2)
-                    return new PointShot();
+
+                //String[] arrayButtons = {"1: Si ", "2: No "};
+                //GraphicInterface window = new GraphicInterface("Quiere usar un disparo especial? ",arrayButtons);
+                //int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
+                //if (buttonPressed == 2)
+                //    return new PointShot();
+
+                GUI.singleDisplayConsole(player.getGui(), "SELECCIONE EL TIPO DE DISPARO", Color.white);
 
                 // Selects special Shot
-                Shot shot;
-                String[] arrayButtons1 = {"1: crucero" , "2: submarino" , "3: buque", "4: portaaviones"};
-                GraphicInterface window1 = new GraphicInterface("Que barco quiere utilizar? ",arrayButtons1);
-                int buttonPressed1 = window1.showWindow(" BattleShip ",600,300,"images/SoldiersInc.jpg");
 
-                return switch (buttonPressed1) {
+                GUI gui = player.getGui();
+                JButton[] arrayButtonShot = gui.getArrayButtonShot();
+                gui.enableShotsButtons(arrayButtonShot);
+                int buttonShotPresed = -1;
+                gui.setButtonShotPresed(buttonShotPresed);
+
+                while (buttonShotPresed == -1) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    buttonShotPresed = gui.getButtonShotPresed();
+                }
+
+                Shot shot;
+                //String[] arrayButtons1 = {"1: crucero" , "2: submarino" , "3: buque", "4: portaaviones"};
+                //GraphicInterface window1 = new GraphicInterface("Que barco quiere utilizar? ",arrayButtons1);
+                //int buttonPressed1 = window1.showWindow(" BattleShip ",600,300,"images/SoldiersInc.jpg");
+
+                return switch (buttonShotPresed) {
+                    case 0 -> {
+                        yield new PointShot();
+                    }
                     case 1 -> {
                         shot = chooseShip(player, "Cruise");
                         yield shot;
