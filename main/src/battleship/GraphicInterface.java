@@ -8,12 +8,25 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Clase que brinda todas las herramientas necesarias para utilizar la interfaz gráfica.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ */
+
 public class GraphicInterface extends JPanel {
     private String imageURL; // URL de la imagen de fondo
     private int buttonPressed; // Botón presionado por el usuario
     private JFrame window; // Ventana principal
 
     // Constructor de la interfaz gráfica
+
+    /**
+     * Crea una interfaz grafica.
+     * @param titleOfLabel aaa
+     * @param arrayButtons aaa
+     */
     public GraphicInterface(String titleOfLabel, String[] arrayButtons) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Configura el diseño vertical
         addTitle(titleOfLabel); // Agrega un título

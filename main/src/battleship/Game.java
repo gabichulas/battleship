@@ -6,16 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Clase que controla todo lo referido al juego.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ */
+
 public class Game {
     private Player player1;
     private Player player2;
 
+    /**
+     * Crea la partida.
+     */
     public Game() {
         // Initialized in init();
         player1 = null;
         player2 = null;
     }
 
+    /**
+     * Controla la partida verificando los estados de la misma.
+     */
     public void play(){
 
         init();
@@ -89,6 +102,12 @@ public class Game {
         }
     }
 
+    /**
+     * Crea y desarrolla una ronda de juego.
+     * @param current Jugador que está controlando la ronda actualmente.
+     * @param enemy Jugador enemigo.
+     * @return Booleano que indica si en esa ronda se derribó el último barco enemigo.
+     */
     private boolean round(Player current, Player enemy)
     {
         if (current.getRemainingShots() == 0){
@@ -121,6 +140,13 @@ public class Game {
         return false;
     }
 
+    /**
+     * Dispara hacia el cuadrante elegido por el jugador.
+     * @param shot El tipo de disparo, que puede ser el normal o cualquiera de los especiales.
+     * @param enemy Jugador enemigo.
+     * @param current Jugador que está controlando la ronda actualmente.
+     * @return Booleano que indica si se golpeo un barco o no.
+     */
     private boolean shoot(Shot shot, Player enemy, Player current)
     {
         Map targetMap = enemy.getMap();
@@ -176,6 +202,9 @@ public class Game {
         return true;
     }
 
+    /**
+     * Inicializa la partida.
+     */
     private void init(){
         // Initializes game constants
         // todo add user input
@@ -223,12 +252,20 @@ public class Game {
         MapLoader.loadPlayerMap(player1, shipLengths, player1.getGui(), player1);
         MapLoader.loadPlayerMap(player2, shipLengths, player2.getGui(), player2);
     }
+
+    /**
+     * Despliega el resultado de empate por pantalla.
+     */
     private void onGameDraw()
     {
         ConsoleColors.printSuccess("EMPATE!");
         GUI.duoDisplayConsole(player1.getGui(), player2.getGui(),"EMPATE!", Color.GREEN);
     }
 
+    /**
+     * Despliega el ganador por pantalla.
+     * @param player Ganador de la partida.
+     */
     private void onPlayerWin(Player player)
     {
         ConsoleColors.printSuccess("JUGADOR: " + player.getName() + " GANA LA PARTIDA!"); // consola

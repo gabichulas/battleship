@@ -5,7 +5,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Clase que carga el mapa de los jugadores.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ */
+
 public class MapLoader {
+    /**
+     * Carga el mapa de un jugador.
+     * @param player Jugador al que se le quiere cargar el mapa.
+     * @param shipLengths Longitudes de los barcos a cargar.
+     * @param gui Interfaz grafica.
+     * @param current Jugador actual.
+     */
     public static void loadPlayerMap(Player player, List<Integer> shipLengths, GUI gui, Player current){
         ConsoleColors.printStage("Loading map of player: " + player.getName());
         // Displays the map and lets the user place each Ship
@@ -27,6 +41,13 @@ public class MapLoader {
         renderer.render();
     }
 
+    /**
+     * Agrega el barco al mapa. Durante esta función se le dan al jugador todas las opciones de posicionamiento y rotación en el mapa.
+     * @param map Mapa.
+     * @param shipLength Longitud del barco.
+     * @param gui Interfaz grafica.
+     * @param current Jugador actual.
+     */
     private static void placeShip(Map map, int shipLength, GUI gui, Player current) {
         ConsoleColors.printStage("Placing ship of length: " + shipLength);
         Ship ship;
@@ -101,6 +122,14 @@ public class MapLoader {
         }
         // Lets user move and select specific ship position
     }
+
+    /**
+     * Verifica si un cuadrante es válido.
+     * @param map Mapa.
+     * @param quadrantColumn Columna del cuadrante.
+     * @param quadrantRow Fila del cuadrante.
+     * @return Booleano que indica si en el cuadrante se puede colocar un barco o una parte de él.
+     */
     private static boolean isValidQuadrant(Map map, int quadrantColumn, int quadrantRow)
     {
         // Tests if the quadrant can be used for placing ships
@@ -124,6 +153,12 @@ public class MapLoader {
         return true;
     }
 
+    /**
+     * Verifica si el barco puede posicionarse en la posición deseada.
+     * @param map Mapa.
+     * @param ship Barco a colocar.
+     * @return Booleano que indica si el barco puede colocarse en la posición indicada.
+     */
     private static boolean isValidShip(Map map, Ship ship)
     {
         // Tests if the ship can be placed in the map with that position
@@ -142,6 +177,13 @@ public class MapLoader {
         return true;
     }
 
+    /**
+     * Guarda el barco.
+     * @param map Mapa.
+     * @param ship Barco a guardar.
+     * @param gui Interfaz grafica.
+     * @return Booleano que indica si el jugador quiere o no guardar el barco.
+     */
     private static boolean inputSaveShip(Map map, Ship ship, GUI gui)
     {
         boolean validPosition = isValidShip(map, ship);
@@ -198,6 +240,11 @@ public class MapLoader {
             ConsoleColors.printError("Posición inválida, debe tener formato: fila columna");
         }
     }
+
+    /**
+     * Rota el barco.
+     * @param ship Barco a rotar.
+     */
     private static void inputShipRotation(Ship ship) {
 
         boolean validInput = false;

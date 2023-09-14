@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
+
+
 public class InputUtils {
     // Class with static methods used to simplify the usage of user input data
     public static boolean booleanInput(String msg)

@@ -5,6 +5,13 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+/**
+ * Clase que renderiza el mapa.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ */
+
 public class MapRenderer
 {
     enum QuadrantState { Water, ShipDestroyed, ShipHit, AllyShip, MissedMissile }
@@ -23,6 +30,13 @@ public class MapRenderer
     // Map guide colors
     private String edgeNumbersColor;
     private QuadrantState[][] renderMap;
+
+    /**
+     * Renderiza el mapa según el estado de los barcos y el agua.
+     * @param columns Numero de columnas.
+     * @param rows Numero de filas.
+     */
+
     public MapRenderer(int columns, int rows)
     {
         // Initializes map full of water
@@ -51,6 +65,12 @@ public class MapRenderer
     {
         renderMap[column][row] = QuadrantState.ShipHit;
     }
+
+    /**
+     * Establece un cuadrante como aliado.
+     * @param column Columna.
+     * @param row Fila.
+     */
     public void setAllyQuadrant(int column, int row)
     {
         renderMap[column][row] = QuadrantState.AllyShip;
@@ -60,6 +80,11 @@ public class MapRenderer
         renderMap[column][row] = QuadrantState.MissedMissile;
     }
 
+    /**
+     * Renderiza los números indicadores de filas y columnas.
+     * @param n Numero.
+     * @throws IOException Número fuera de rango.
+     */
     private void renderNumberBlock(int n) throws IOException
     {
         // Empty
@@ -74,6 +99,10 @@ public class MapRenderer
         else
             writer.write(edgeNumbersColor + n + " "+ ConsoleColors.RESET);
     }
+
+    /**
+     * Renderiza el mapa.
+     */
     public void render() {
         int columns = renderMap.length;
         int rows = renderMap[0].length;
@@ -127,6 +156,11 @@ public class MapRenderer
         }
     }
 
+    /**
+     * Establece un barco como aliado.
+     * @param ship Barco.
+     * @param gui Interfaz grafica.
+     */
     public void setAllyShip(Ship ship,GUI gui)
     {
         int quadrantColumn = ship.getOriginColumn();
