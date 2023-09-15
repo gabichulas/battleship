@@ -81,29 +81,17 @@ public class InputUtils {
             ConsoleColors.printWarning("No tiene barcos de tipo " + className + ". Desplegando disparo puntual.");
         return new PointShot();
     }
-    public static Shot inputShot(Player player)
+    public static Shot inputShot(Player player, GUI playerGui)
     {
         while (true) {
             try {
-
-                // Gives player the option of choosing any ship to shoot
-
-
-                //String[] arrayButtons = {"1: Si ", "2: No "};
-                //GraphicInterface window = new GraphicInterface("Quiere usar un disparo especial? ",arrayButtons);
-                //int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
-                //if (buttonPressed == 2)
-                //    return new PointShot();
-
-                GUI.singleDisplayConsole(player.getGui(), "SELECCIONE EL TIPO DE DISPARO", Color.white);
+                GUI.singleDisplayConsole(playerGui, "SELECCIONE EL TIPO DE DISPARO", Color.white);
 
                 // Selects special Shot
-
-                GUI gui = player.getGui();
-                JButton[] arrayButtonShot = gui.getArrayButtonShot();
-                gui.enableShotsButtons(arrayButtonShot);
+                JButton[] arrayButtonShot = playerGui.getArrayButtonShot();
+                playerGui.enableShotsButtons(arrayButtonShot);
                 int buttonShotPresed = -1;
-                gui.setButtonShotPresed(buttonShotPresed);
+                playerGui.setButtonShotPresed(buttonShotPresed);
 
                 while (buttonShotPresed == -1) {
                     try {
@@ -111,33 +99,26 @@ public class InputUtils {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    buttonShotPresed = gui.getButtonShotPresed();
+                    buttonShotPresed = playerGui.getButtonShotPresed();
                 }
 
                 Shot shot;
-                //String[] arrayButtons1 = {"1: crucero" , "2: submarino" , "3: buque", "4: portaaviones"};
-                //GraphicInterface window1 = new GraphicInterface("Que barco quiere utilizar? ",arrayButtons1);
-                //int buttonPressed1 = window1.showWindow(" BattleShip ",600,300,"images/SoldiersInc.jpg");
 
                 return switch (buttonShotPresed) {
                     case 0 -> {
                         yield new PointShot();
                     }
                     case 1 -> {
-                        shot = chooseShip(player, "Cruise");
-                        yield shot;
+                        yield chooseShip(player, "Cruise");
                     }
                     case 2 -> {
-                        shot = chooseShip(player, "Submarine");
-                        yield shot;
+                        yield chooseShip(player, "Submarine");
                     }
                     case 3 -> {
-                        shot = chooseShip(player, "Vessel");
-                        yield shot;
+                        yield chooseShip(player, "Vessel");
                     }
                     case 4 -> {
-                        shot = chooseShip(player, "AircraftCarrier");
-                        yield shot;
+                        yield chooseShip(player, "AircraftCarrier");
                     }
                     default -> throw new IOException();
                 };
@@ -154,7 +135,7 @@ public class InputUtils {
                 // Si se presiona "Cancelar", el programa se cierra
                 System.exit(0);
             }
-        } while (name == null || name.trim().isEmpty());
+        } while (name.trim().isEmpty());
         return name;
     }
 

@@ -10,7 +10,6 @@ package battleship;
 public class Player {
     private String name;
     private Map map;
-    private GUI gui;
     private int shots;
     private int hits;
     private int remainingShots = 30;    // (numero provisorio)
@@ -63,21 +62,6 @@ public class Player {
         this.map = map;
     }
 
-    /**
-     * Obtiene la interfaz gráfica asociada a un jugador.
-     * @return Interfaz grafica.
-     */
-    public GUI getGui() {
-        return gui;
-    }
-    /**
-     * Establece la interfaz gráfica asociada a un jugador.
-     * @param gui Interfaz grafica.
-     */
-    public void setGui(GUI gui) {
-        this.gui = gui;
-    }
-
     public int getShots() {
         return shots;
     }
@@ -103,12 +87,11 @@ public class Player {
 
     // Constructores
 
-    public Player(String name, Map map, int shots, int hits, GUI gui) {
+    public Player(String name, Map map, int shots, int hits) {
         this.name = name;
         this.map = map;
         this.shots = shots;
         this.hits = hits;
-        this.gui = gui;
     }
 
     /**

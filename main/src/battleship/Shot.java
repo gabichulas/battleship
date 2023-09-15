@@ -25,10 +25,9 @@ public abstract class Shot {
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo satisfactoriamente algun cuadrante.
      */
-    public abstract boolean shot(Map map, int column, int row, GUI gui);
+    public abstract boolean shot(Map map, int column, int row);
     protected int hitCount;
 
     /**
@@ -75,15 +74,12 @@ class PointShot extends Shot
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo algun barco.
      */
-    public boolean shot(Map map, int column, int row, GUI gui)
+    public boolean shot(Map map, int column, int row)
     {
         Quadrant shootQuadrant = map.getQuadrant(column, row);
         shootQuadrant.setShot(true);
-
-        JButton[][] Matrix = gui.getEnemyMatrix();
 
         if (shootQuadrant.containsShip())
         {
@@ -94,12 +90,10 @@ class PointShot extends Shot
             ship.hit();
             hitCount = 1;
 
-            gui.PaintQuadrant(column, row, Matrix, Color.RED);
             if (!ship.isAlive())
                 destroyedCount = 1;
             return true;
         }
-        gui.PaintQuadrant(column, row, Matrix, Color.GRAY);
         return false;
     }
 }
@@ -128,11 +122,10 @@ class HorizontalShot extends Shot
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo algun barco.
      * @see PointShot
      */
-    public boolean shot(Map map, int column, int row, GUI gui)
+    public boolean shot(Map map, int column, int row)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
@@ -142,7 +135,7 @@ class HorizontalShot extends Shot
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, subColumn, row, gui);
+            hitAny |= shot.shot(map, subColumn, row);
 
             hitCount += shot.hitCount;
             destroyedCount += shot.destroyedCount;
@@ -174,11 +167,10 @@ class VerticalShot extends Shot
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo algun barco.
      * @see PointShot
      */
-    public boolean shot(Map map, int column, int row, GUI gui)
+    public boolean shot(Map map, int column, int row)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
@@ -188,7 +180,7 @@ class VerticalShot extends Shot
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, column, subRow, gui);
+            hitAny |= shot.shot(map, column, subRow);
 
             hitCount += shot.hitCount;
             destroyedCount += shot.destroyedCount;
@@ -221,18 +213,17 @@ class CrossShot extends Shot
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo algun barco.
      * @see VerticalShot
      * @see HorizontalShot
      */
-    public boolean shot(Map map, int column, int row, GUI gui)
+    public boolean shot(Map map, int column, int row)
     {
         boolean hitAny = false;
         HorizontalShot horizontalShot = new HorizontalShot(length);
         VerticalShot verticalShot = new VerticalShot(length);
-        hitAny |= horizontalShot.shot(map, column, row, gui);
-        hitAny |= verticalShot.shot(map, column, row, gui);
+        hitAny |= horizontalShot.shot(map, column, row);
+        hitAny |= verticalShot.shot(map, column, row);
         hitCount += horizontalShot.hitCount;
         hitCount += verticalShot.hitCount;
         destroyedCount += horizontalShot.destroyedCount;
@@ -259,12 +250,11 @@ class SquareShot extends Shot{
      * @param map Mapa a disparar.
      * @param column Columna a disparar.
      * @param row Fila a disparar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si se golpeo algun barco.
      * @see HorizontalShot
      */
     @Override
-    public boolean shot(Map map, int column, int row, GUI gui) {
+    public boolean shot(Map map, int column, int row) {
         boolean hitAny = false;
         int i;
         for (i = row - 1; i<= row + 1; i++ ){
@@ -272,7 +262,7 @@ class SquareShot extends Shot{
                 continue;
             }
             HorizontalShot horizontalShot = new HorizontalShot(1);
-            hitAny |= horizontalShot.shot(map, column, i, gui);
+            hitAny |= horizontalShot.shot(map, column, i);
             hitCount += horizontalShot.hitCount;
             destroyedCount += horizontalShot.destroyedCount;
         }

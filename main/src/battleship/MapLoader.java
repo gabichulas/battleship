@@ -13,42 +13,48 @@ import java.util.Objects;
  */
 
 public class MapLoader {
+
+    private Player player;
+    private GUI playerGui;
+    private Map map;
+
+    MapLoader(Player player, GUI playerGui)
+    {
+        this.player = player;
+        this.map = player.getMap();
+        this.playerGui = playerGui;
+    }
+
     /**
      * Carga el mapa de un jugador.
-     * @param player Jugador al que se le quiere cargar el mapa.
      * @param shipLengths Longitudes de los barcos a cargar.
-     * @param gui Interfaz grafica.
-     * @param current Jugador actual.
      */
-    public static void loadPlayerMap(Player player, List<Integer> shipLengths, GUI gui, Player current){
+    public void loadPlayerMap(List<Integer> shipLengths){
         ConsoleColors.printStage("Loading map of player: " + player.getName());
         // Displays the map and lets the user place each Ship
-        Map map = player.getMap();
         for (int shipLength : shipLengths)
         {
             // Creates new ship and places on the map
-            placeShip(map, shipLength, gui, current);
+            placeShip(shipLength);
         }
         ConsoleColors.printSuccess("Mapa del jugador " + player.getName() + " cargado correctamente");
 
         // Displays loaded map
+        Map map = player.getMap();
         MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
 
         // Loads already added ships to the renderer
         for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip,gui);
+            renderer.setAllyShip(allyShip, playerGui);
 
         renderer.render();
     }
 
     /**
      * Agrega el barco al mapa. Durante esta función se le dan al jugador todas las opciones de posicionamiento y rotación en el mapa.
-     * @param map Mapa.
      * @param shipLength Longitud del barco.
-     * @param gui Interfaz grafica.
-     * @param current Jugador actual.
      */
-    private static void placeShip(Map map, int shipLength, GUI gui, Player current) {
+    private void placeShip(int shipLength) {
         ConsoleColors.printStage("Placing ship of length: " + shipLength);
         Ship ship;
         switch (shipLength)
@@ -69,12 +75,11 @@ public class MapLoader {
                 ship = new AircraftCarrier();
                 break;
         }
-
         MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
 
         // Loads already added ships to the renderer
         for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip,gui);
+            renderer.setAllyShip(allyShip, playerGui);
 
         renderer.render();
 
@@ -92,7 +97,7 @@ public class MapLoader {
 
                     switch (buttonPressed) {
                         case 1 -> {
-                            inputShipOrigin(ship, current);
+                            inputShipOrigin(ship);
                             validInput = true;
                         }
                         case 2 -> {
@@ -100,7 +105,7 @@ public class MapLoader {
                             validInput = true;
                         }
                         case 3 -> {
-                            if (inputSaveShip(map, ship, gui)) {
+                            if (inputSaveShip(ship)) {
                                 return;
                             }
                         }
@@ -116,12 +121,11 @@ public class MapLoader {
 
     /**
      * Verifica si un cuadrante es válido.
-     * @param map Mapa.
      * @param quadrantColumn Columna del cuadrante.
      * @param quadrantRow Fila del cuadrante.
      * @return Booleano que indica si en el cuadrante se puede colocar un barco o una parte de él.
      */
-    private static boolean isValidQuadrant(Map map, int quadrantColumn, int quadrantRow)
+    private boolean isValidQuadrant(int quadrantColumn, int quadrantRow)
     {
         // Tests if the quadrant can be used for placing ships
         if (!map.inBounds(quadrantColumn, quadrantRow))
@@ -146,11 +150,10 @@ public class MapLoader {
 
     /**
      * Verifica si el barco puede posicionarse en la posición deseada.
-     * @param map Mapa.
      * @param ship Barco a colocar.
      * @return Booleano que indica si el barco puede colocarse en la posición indicada.
      */
-    private static boolean isValidShip(Map map, Ship ship)
+    private boolean isValidShip(Ship ship)
     {
         // Tests if the ship can be placed in the map with that position
         int quadrantColumn = ship.getOriginColumn();
@@ -159,7 +162,7 @@ public class MapLoader {
         // Checks if current position is valid. Iterates through all the ship quadrants
         for (int quadrantIndex = 0; quadrantIndex < ship.getLength(); quadrantIndex++) {
 
-            if (!isValidQuadrant(map, quadrantColumn, quadrantRow))
+            if (!isValidQuadrant(quadrantColumn, quadrantRow))
                 return false;
             // Valid quadrant, moves to next Quadrant
             quadrantColumn += ship.getOrientationDx();
@@ -170,14 +173,12 @@ public class MapLoader {
 
     /**
      * Guarda el barco.
-     * @param map Mapa.
      * @param ship Barco a guardar.
-     * @param gui Interfaz grafica.
      * @return Booleano que indica si el jugador quiere o no guardar el barco.
      */
-    private static boolean inputSaveShip(Map map, Ship ship, GUI gui)
+    private boolean inputSaveShip(Ship ship)
     {
-        boolean validPosition = isValidShip(map, ship);
+        boolean validPosition = isValidShip(ship);
 
         if (!validPosition) {
             return false;
@@ -191,33 +192,32 @@ public class MapLoader {
         int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
 
         if (buttonPressed == 1){
-            map.addShip(ship, gui);
+            map.addShip(ship, playerGui);
         } else { return false;
 
         }
         return true;
     }
-    private static void inputShipOrigin(Ship ship, Player current)
+    private void inputShipOrigin(Ship ship)
     {
         try
         {
             int shoot_row;
             int shoot_column;
 
-            GUI gui = current.getGui();
-            JButton[][] myMatrix = gui.getMyMatrix();
+            JButton[][] myMatrix = playerGui.getMyMatrix();
 
-            gui.enableMatrixButtons(myMatrix);
+            playerGui.enableMatrixButtons(myMatrix);
 
             int[] array = {-1, -1};
-            gui.setMiArray(array);
+            playerGui.setMiArray(array);
             while (array[0] == -1 || array[1] == -1) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                array = gui.getMiArray();
+                array = playerGui.getMiArray();
             }
 
             shoot_row = array[0];
@@ -236,7 +236,7 @@ public class MapLoader {
      * Rota el barco.
      * @param ship Barco a rotar.
      */
-    private static void inputShipRotation(Ship ship) {
+    private void inputShipRotation(Ship ship) {
 
         boolean validInput = false;
         while (!validInput) {
