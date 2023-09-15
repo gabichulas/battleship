@@ -9,17 +9,27 @@ package battleship;
 
 public abstract class Ship {
     private int health;
-    private final int length; // length is final since it's not modified after construction
+    private final int length;
 
-    // Ship orientation defined as -1, 0, 1 values
-    // where (dx, dy) = (1, 0) means HorizontalToRight
-    //       (dx, dy) = (-1, 0) means HorizontalToLeft
-    //       (dx, dy) = (0, 1) means VerticalUp
-    //       (dx, dy) = (0, -1) means VerticalDown
+
+
+    /**
+     * Un barco tiene una posición origen, y una orientación a traves de
+     * la cual se ocupan cuadrantes, partiendo desde el origen
+     * */
+    private Position origin;
+
+    /**
+     * La orientacion de los barcos se define con 2 numeros,
+     * (dx, dy) con los cuales podemos definir las siguientes
+     * orientaciones.
+     * (dx, dy) = (1, 0): izquierda a derecha (->)
+     * (dx, dy) = (0, 1): hacia arriba (^)
+     * (dx, dy) = (-1, 0): derecha a izquierda (<-)
+     * (dx, dy) = (0, -1): hacia abajo (v)
+     * */
     private int orientationDx;
     private int orientationDy;
-    private int originColumn;
-    private int originRow;
     protected int specialShotLeft;
 
     /**
@@ -29,8 +39,7 @@ public abstract class Ship {
     public Ship(int length){
         this.health = length;
         this.length = length;
-        this.originColumn = 0;
-        this.originRow = 0;
+        this.origin = new Position(0, 0);
         orientationDx = 1;
         orientationDy = 0;
     }
@@ -69,36 +78,12 @@ public abstract class Ship {
         return length;
     }
 
-    /**
-     * Obtiene la fila de origen del barco.
-     * @return Número de fila donde se establece el origen del barco.
-     */
-    public int getOriginRow() {
-        return originRow;
+    public Position getOrigin() {
+        return new Position(origin.x, origin.y);
     }
 
-    /**
-     * Establece la fila de origen del barco.
-     * @param originRow Número de fila donde se establece el origen del barco.
-     */
-    public void setOriginRow(int originRow) {
-        this.originRow = originRow;
-    }
-
-    /**
-     * Obtiene la columna de origen del barco.
-     * @return Número de columna donde se establece el origen del barco.
-     */
-    public int getOriginColumn() {
-        return originColumn;
-    }
-
-    /**
-     * Establece la columna de origen del barco
-     * @param originColumn Número de columna donde se establece el origen del barco.
-     */
-    public void setOriginColumn(int originColumn) {
-        this.originColumn = originColumn;
+    public void setOrigin(Position origin) {
+        this.origin = origin;
     }
 
     /**

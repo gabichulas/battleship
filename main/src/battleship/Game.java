@@ -55,6 +55,10 @@ public class Game {
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
 
+        // todo: (optional?) Let user select shotsCount
+        int shotsCount = 30;
+        player1.setRemainingShots(shotsCount);
+        player2.setRemainingShots(shotsCount);
         GUI.singleDisplayCount(player1Gui, "CONTADOR DE DISPAROS: " + player1.getRemainingShots() ,Color.white);
         GUI.singleDisplayCount(player2Gui, "CONTADOR DE DISPAROS: " + player2.getRemainingShots() ,Color.white);
 
@@ -104,13 +108,13 @@ public class Game {
             boolean player1Round = Objects.equals(current.getName(), player1.getName());
             boolean currentDestroysAll = round(current, enemy, player1Round ? player1Gui : player2Gui);
 
-            /// 2) Test for endgame edge cases -------------------------------------------------------------------------
+            /// 2) Situaciones de final de partida----------------------------------------------------------------------
             if (currentDestroysAll) {
 
                 boolean player2CanDraw = player1.getMap().getAlive().size() == 1;
                 if (player1Round && player2CanDraw) {
 
-                    // Gives player2 last chance to draw the game
+                    // Jugador 2 tiene su ultima oportunidad para empatar
                     ConsoleColors.printStage("ULTIMA OPORTUNIDAD PARA EL JUGADOR 2"); // consola
                     GUI.duoDisplayConsole(player1Gui, player2Gui, "ULTIMA OPORTUNIDAD PARA EL JUGADOR 2",Color.white);
 
@@ -120,20 +124,20 @@ public class Game {
                         return;
                     }
                 }
-                // Current player wins
+                // Gana el jugador actual
                 onPlayerWin(current);
                 return;
             }
-            // Tests when both player ran out of missiles
+            // Si ambos jugadores se quedan sin misiles
             if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
 
-                // If both players hit the same amount it's a draw
+                // Si ambos jugadores tienen la misma cantidad de hits, entonces es un empate
                 if (current.getHits() == enemy.getHits()) {
                     onGameDraw();
                     return;
                 }
 
-                // Otherwise, the player with larger hit count wins
+                // De otro modo, el jugador con mayor cantidad de hits gana
                 if (current.getHits() > enemy.getHits()){
                     ConsoleColors.printWarning("AMBOS SE QUEDARON SIN TIROS, PERO " + current.getName() + " TUVO MAS ACIERTOS!"); // consola
                     GUI.duoDisplayConsole(player1Gui, player2Gui, "Ambos se quedaron sin tiros, pero " + current.getName() + " tuvo mas aciertos!",Color.GREEN);
@@ -147,7 +151,7 @@ public class Game {
                 }
                 return;
             }
-            /// 3) Swaps players for next round ------------------------------------------------------------------------
+            /// 3) Intercambia los jugadores ---------------------------------------------------------------------------
             Player temp = current;
             current = enemy;
             enemy = temp;
@@ -168,7 +172,7 @@ public class Game {
             return false;
         }
 
-        // Shoots until current player misses
+        // Dispara hasta que falle
         boolean hit = true;
         while(hit)
         {
@@ -177,13 +181,13 @@ public class Game {
 
             updatePlayerGui(current, enemy);
 
-            // Updates remaining shoots
+            // Catualiza la cantidad de disparos restantes
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
 
             ConsoleColors.printWarning("TE QUEDAN " + current.getRemainingShots() +" TIROS"); // consola
             GUI.singleDisplayCount(currentGui, "CONTADOR DE DISPAROS: "+ current.getRemainingShots(), Color.white);
 
-            // If after shooting, all enemy ships were destroyed, current Player wins
+            // Si al disparar, la cantidad de barcos enemigos restantes es 0.
             if (hit)
             {
                 int aliveCount = enemy.getMap().getAlive().size();
@@ -205,8 +209,7 @@ public class Game {
     {
         Map targetMap = enemy.getMap();
         Quadrant shootQuadrant;
-        int shoot_column;
-        int shoot_row;
+        Position shootPosition = new Position(0, 0);
 
         JButton[][] enemyMatrix = currentGui.getEnemyMatrix();
 
@@ -222,13 +225,12 @@ public class Game {
                 }
                 array = currentGui.getMiArray();
             }
+            shootPosition.x = array[1];
+            shootPosition.y = array[0];
 
-            shoot_row = array[0];
-            shoot_column = array[1];
+            shootQuadrant = targetMap.getQuadrant(shootPosition);
 
-            shootQuadrant = targetMap.getQuadrant(shoot_column, shoot_row);
-
-            // Tests for valid shoot quadrant
+            // Verifica que el cuadrante sea valido
             if (shootQuadrant.isShot()) {
                 ConsoleColors.printWarning("YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO"); // consola
                 GUI.singleDisplayConsole(currentGui, "YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO", Color.YELLOW);
@@ -236,11 +238,11 @@ public class Game {
 
         } while(shootQuadrant.isShot());
 
-        // Shoots
-        boolean didHit = shot.shot(targetMap, shoot_column, shoot_row);
+        // Dispara
+        boolean didHit = shot.shot(targetMap, shootPosition);
 
         // Actualiza la cantidad de hits
-        current.setHits(current.getHits() + shot.hitCount);
+        current.setHits(current.getHits() + shot.getHitCount());
 
         if (!didHit) {
             ConsoleColors.printFailure("AGUA! TIRO FALLADO."); // consola
@@ -295,7 +297,7 @@ public class Game {
             {
                 // Solo uso el mapo del enemigo, pues solo este se modifica
                 // luego de haber disparado
-                Quadrant quadrant = enemyMap.getQuadrant(col, row);
+                Quadrant quadrant = enemyMap.getQuadrant(new Position(col, row));
 
                 // ---- Actualiza el mapa de ataque del jugador actual
                 Color quadrantColor = Color.WHITE;

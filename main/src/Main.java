@@ -2,8 +2,6 @@
 import battleship.Game;
 import battleship.GraphicInterface;
 
-import java.awt.*;
-
 /**
  * Videojuego desarrollado en Java inspirado en el clasico
  * "Batalla Naval" o "BattleShip".
@@ -23,7 +21,6 @@ public class Main {
             String[] arrayButtons = {"1: SI ", "2: NO "};
             GraphicInterface window = new GraphicInterface(" ¿DESEA VOLVER A JUGAR? ",arrayButtons);
             int buttonPressed = window.showWindow(" BATALLA NAVAL ",600,180,"images/SoldiersInc.jpg");
-            //System.out.println(" Botón presionado: " + buttonPressed);
 
             if (buttonPressed == 1) {
                 playAgain = true;

@@ -31,10 +31,8 @@ public class Map {
         this.numColumns = numColumns;
         ships = new ArrayList<>(shipCount);
 
-        // Creates Quadrants map
+        // Crea el array de cuadrantes y los inicializa
         quadrants = new Quadrant[numColumns][numRows];
-
-        // Initializes all Quadrants (otherwise these are null)
         for (int col = 0; col < numColumns; col++)
         {
             for (int row = 0; row < numRows; row++)
@@ -69,30 +67,27 @@ public class Map {
 
     /**
      * Verifica si un cuadrante esta dentro del mapa o no.
-     * @param column Columna seleccionada.
-     * @param row Fila seleccionada.
+     * @param position posicion a comprobar
      * @return Booleano que indica si el cuadrante esta dentro del mapa o no.
      */
-    public boolean inBounds(int column, int row)
+    public boolean inBounds(Position position)
     {
         // Returns true if (column, row) is a valid map position
-        return row >= 0 && row < numRows && column >= 0 && column < numColumns;
+        return position.getRow() >= 0 && position.getRow() < numRows && position.getColumn() >= 0 && position.getColumn() < numColumns;
     }
 
     /**
      * Obtiene el cuadrante dado por un par de columna y fila.
-     * @param column Columna seleccionada.
-     * @param row Fila seleccionada.
      * @return Cuadrante dado por los parámetros ingresados.
      */
-    public Quadrant getQuadrant(int column, int row)
+    public Quadrant getQuadrant(Position position)
     {
-        if (!inBounds(column, row))
+        if (!inBounds(position))
         {
-            throw new IndexOutOfBoundsException("battleship.Map.getQuadrant() out of bounds: (" + row + ", " + column + ")");
+            throw new IndexOutOfBoundsException("battleship.Map.getQuadrant() out of bounds: " + position);
         }
 
-        return quadrants[column][row];
+        return quadrants[position.getColumn()][position.getRow()];
     }
 
     /**
@@ -129,30 +124,31 @@ public class Map {
      */
     public void addShip(Ship ship, GUI gui)
     {
-        int quadrantColumn = ship.getOriginColumn();
-        int quadrantRow = ship.getOriginRow();
+        Position quadrantPosition = ship.getOrigin();
         // Adds Ship to all corresponding Quadrants
         // NOTE: It doesn't check for valid position
         for (int quadrant_index = 0; quadrant_index < ship.getLength(); quadrant_index++) {
 
-            Quadrant quadrant = getQuadrant(quadrantColumn, quadrantRow);
+            Quadrant quadrant = getQuadrant(quadrantPosition);
             quadrant.setShip(ship);
 
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j <= 1; j++)
                 {
-                    int subQuadrantColumn = quadrantColumn + i;
-                    int subQuadrantRow = quadrantRow + j;
-                    if (!inBounds(subQuadrantColumn, subQuadrantRow))
+                    Position subQuadrantPosition = new Position(
+                            quadrantPosition.x + i,
+                            quadrantPosition.y + j
+                    );
+                    if (!inBounds(subQuadrantPosition))
                         continue;
 
-                    Quadrant subQuadrant = getQuadrant(subQuadrantColumn, subQuadrantRow);
+                    Quadrant subQuadrant = getQuadrant(subQuadrantPosition);
                     subQuadrant.setSurroundsShip(true);
                 }
 
             // Moves to next Quadrant
-            quadrantColumn += ship.getOrientationDx();
-            quadrantRow += ship.getOrientationDy();
+            quadrantPosition.x += ship.getOrientationDx();
+            quadrantPosition.y += ship.getOrientationDy();
         }
         ships.add(ship);
     }

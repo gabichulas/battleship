@@ -12,7 +12,7 @@ public class Player {
     private Map map;
     private int shots;
     private int hits;
-    private int remainingShots = 30;    // (numero provisorio)
+    private int remainingShots;
 
 
     // Getters y Setters

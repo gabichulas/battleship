@@ -163,18 +163,17 @@ public class MapRenderer
      */
     public void setAllyShip(Ship ship,GUI gui)
     {
-        int quadrantColumn = ship.getOriginColumn();
-        int quadrantRow = ship.getOriginRow();
+        Position quadrantPosition = ship.getOrigin();
         // Adds Ship to all corresponding Quadrants
         // NOTE: It doesn't check for valid position
         for (int i = 0; i < ship.getLength(); i++) {
 
             JButton[][] myMatrix = gui.getMyMatrix();
-            gui.PaintQuadrant(quadrantColumn, quadrantRow,myMatrix, Color.GREEN);
-            setAllyQuadrant(quadrantColumn, quadrantRow);
+            gui.PaintQuadrant(quadrantPosition.getColumn(), quadrantPosition.getRow(), myMatrix, Color.GREEN);
+            setAllyQuadrant(quadrantPosition.getColumn(), quadrantPosition.getRow());
             // Moves to next Quadrant
-            quadrantColumn += ship.getOrientationDx();
-            quadrantRow += ship.getOrientationDy();
+            quadrantPosition.x += ship.getOrientationDx();
+            quadrantPosition.y += ship.getOrientationDy();
         }
     }
 }

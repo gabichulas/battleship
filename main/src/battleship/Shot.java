@@ -23,11 +23,10 @@ public abstract class Shot {
     /**
      * Realiza el disparo. Su implementación depende de las subclases que utilicen el método abstracto.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
+     * @param position Posicion a disparar.
      * @return Booleano que indica si se golpeo satisfactoriamente algun cuadrante.
      */
-    public abstract boolean shot(Map map, int column, int row);
+    public abstract boolean shot(Map map, Position position);
     protected int hitCount;
 
     /**
@@ -72,13 +71,11 @@ class PointShot extends Shot
     /**
      * Realiza un disparo puntual.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
      * @return Booleano que indica si se golpeo algun barco.
      */
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, Position position)
     {
-        Quadrant shootQuadrant = map.getQuadrant(column, row);
+        Quadrant shootQuadrant = map.getQuadrant(position);
         shootQuadrant.setShot(true);
 
         if (shootQuadrant.containsShip())
@@ -120,25 +117,25 @@ class HorizontalShot extends Shot
     /**
      * Realiza un disparo horizontal. Se utilizaran varios PointShot para realizar este disparo.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
+     * @param position posicion a disparar.
      * @return Booleano que indica si se golpeo algun barco.
      * @see PointShot
      */
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, Position position)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
         {
-            int subColumn = column + i;
-            if (!map.inBounds(subColumn, row))
+            Position shootPos = new Position(position.getColumn() + i, position.getRow());
+
+            if (!map.inBounds(shootPos))
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, subColumn, row);
+            hitAny |= shot.shot(map, shootPos);
 
-            hitCount += shot.hitCount;
-            destroyedCount += shot.destroyedCount;
+            hitCount += shot.getHitCount();
+            destroyedCount += shot.getDestroyedCount();
         }
         return hitAny;
     }
@@ -165,25 +162,24 @@ class VerticalShot extends Shot
     /**
      * Realiza un disparo vertical. Se utilizaran varios PointShot para realizar este disparo.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
+     * @param position posicion a disparar.
      * @return Booleano que indica si se golpeo algun barco.
      * @see PointShot
      */
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, Position position)
     {
         boolean hitAny = false;
         for (int i = -length; i <= length; i++)
         {
-            int subRow = row + i;
-            if (!map.inBounds(column, subRow))
+            Position shootPosition = new Position(position.getColumn(), position.getRow() + i);
+            if (!map.inBounds(shootPosition))
                 continue;
 
             PointShot shot = new PointShot();
-            hitAny |= shot.shot(map, column, subRow);
+            hitAny |= shot.shot(map, shootPosition);
 
-            hitCount += shot.hitCount;
-            destroyedCount += shot.destroyedCount;
+            hitCount += shot.getHitCount();
+            destroyedCount += shot.getDestroyedCount();
         }
         return hitAny;
     }
@@ -211,23 +207,22 @@ class CrossShot extends Shot
     /**
      * Realiza un disparo en cruz. Se utilizarán un VerticalShot y un HorizontalShot para realizar este disparo.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
+     * @param position posicion a disparar.
      * @return Booleano que indica si se golpeo algun barco.
      * @see VerticalShot
      * @see HorizontalShot
      */
-    public boolean shot(Map map, int column, int row)
+    public boolean shot(Map map, Position position)
     {
         boolean hitAny = false;
         HorizontalShot horizontalShot = new HorizontalShot(length);
         VerticalShot verticalShot = new VerticalShot(length);
-        hitAny |= horizontalShot.shot(map, column, row);
-        hitAny |= verticalShot.shot(map, column, row);
-        hitCount += horizontalShot.hitCount;
-        hitCount += verticalShot.hitCount;
-        destroyedCount += horizontalShot.destroyedCount;
-        destroyedCount += verticalShot.destroyedCount;
+        hitAny |= horizontalShot.shot(map, position);
+        hitAny |= verticalShot.shot(map, position);
+        hitCount += horizontalShot.getHitCount();
+        hitCount += verticalShot.getHitCount();
+        destroyedCount += horizontalShot.getDestroyedCount();
+        destroyedCount += verticalShot.getDestroyedCount();
         return hitAny;
     }
 }
@@ -248,23 +243,23 @@ class SquareShot extends Shot{
     /**
      * Realiza un disparo en cuadrado. Se utilizarán tres HorizontalShot para realizar este disparo.
      * @param map Mapa a disparar.
-     * @param column Columna a disparar.
-     * @param row Fila a disparar.
+     * @param position posicion a disparar.
      * @return Booleano que indica si se golpeo algun barco.
      * @see HorizontalShot
      */
     @Override
-    public boolean shot(Map map, int column, int row) {
+    public boolean shot(Map map, Position position) {
         boolean hitAny = false;
-        int i;
-        for (i = row - 1; i<= row + 1; i++ ){
-            if (!map.inBounds(column, i)){
+
+        for (int i = -1; i <= 1; i++ ){
+            Position shootPosition = new Position(position.getColumn(), position.getRow() + i);
+            if (!map.inBounds(shootPosition)){
                 continue;
             }
             HorizontalShot horizontalShot = new HorizontalShot(1);
-            hitAny |= horizontalShot.shot(map, column, i);
-            hitCount += horizontalShot.hitCount;
-            destroyedCount += horizontalShot.destroyedCount;
+            hitAny |= horizontalShot.shot(map, shootPosition);
+            hitCount += horizontalShot.getHitCount();
+            destroyedCount += horizontalShot.getDestroyedCount();
         }
         return hitAny;
     }
