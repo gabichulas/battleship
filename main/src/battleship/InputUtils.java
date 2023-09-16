@@ -49,25 +49,23 @@ public class InputUtils {
     {
         while (true) {
             try {
-                GUI.singleDisplayConsole(playerGui, "SELECCIONE EL TIPO DE DISPARO", Color.white);
+                playerGui.printTextQuestion(playerGui, "SELECCIONE EL TIPO DE DISPARO", Color.white);
 
                 // Selects special Shot
                 JButton[] arrayButtonShot = playerGui.getArrayButtonShot();
                 playerGui.enableShotsButtons(arrayButtonShot);
                 int buttonShotPresed = -1;
-                playerGui.setButtonShotPresed(buttonShotPresed);
-
+                playerGui.setButtonPressed(buttonShotPresed);
                 while (buttonShotPresed == -1) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    buttonShotPresed = playerGui.getButtonShotPresed();
+                    buttonShotPresed = playerGui.getButtonPressed();
                 }
 
                 Shot shot;
-
                 return switch (buttonShotPresed) {
                     case 0 -> {
                         yield new PointShot();
@@ -110,7 +108,6 @@ public class InputUtils {
             if (inputP1 == null) {
                 System.exit(0);
             }
-
             // Intenta convertir la entrada en un número
             try {
                 num = Integer.parseInt(inputP1);
@@ -120,5 +117,4 @@ public class InputUtils {
         } while (num <= 0 || num > numFinal);
         return num;
     }
-
 }

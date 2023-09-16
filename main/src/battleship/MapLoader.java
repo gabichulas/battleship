@@ -1,6 +1,7 @@
 package battleship;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -77,21 +78,18 @@ public class MapLoader {
             boolean validInput = false;
             while (!validInput) {
                 try {
-
-                    String[] arrayButtons = {"1: Cambiar Posición ", "2: Rotar Barco     ", "3: Guardar Barco   "};
-                    GraphicInterface window = new GraphicInterface(" Menu de posicionamiento: ", arrayButtons);
-                    int buttonPressed = window.showWindow(" BattleShip ",600,190,"images/SoldiersInc.jpg");
-
+                    GUI.printTextQuestion(playerGui, "MENU DE POSICIONAMIENTO", Color.white);
+                    int buttonPressed = playerGui.buttonOptionPressed(2);
                     switch (buttonPressed) {
-                        case 1 -> {
+                        case 0 -> {
                             inputShipOrigin(ship);
                             validInput = true;
                         }
-                        case 2 -> {
+                        case 1 -> {
                             inputShipRotation(ship);
                             validInput = true;
                         }
-                        case 3 -> {
+                        case 2 -> {
                             if (inputSaveShip(ship)) {
                                 return;
                             }
@@ -168,11 +166,11 @@ public class MapLoader {
         if (!validPosition) {
             return false;
         }
-        String[] arrayButtons = {"1: Si ", "2: No "};
-        GraphicInterface window = new GraphicInterface(" ¿Desea colocar el barco en el cuadrante" + ship.getOrigin() + "?", arrayButtons);
-        int buttonPressed = window.showWindow(" BattleShip ",600,180,"images/SoldiersInc.jpg");
 
-        if (buttonPressed == 1){
+        GUI.printTextQuestion(playerGui, " ¿DESEA COLOCAR EL BARCO EN EL CUADRANTE" + ship.getOrigin() + "?", Color.white);
+        int buttonPressed = playerGui.buttonOptionPressed(1);
+
+        if (buttonPressed == 0){
             map.addShip(ship, playerGui);
             return true;
         }
@@ -194,14 +192,14 @@ public class MapLoader {
             playerGui.enableMatrixButtons(myMatrix);
 
             int[] array = {-1, -1};
-            playerGui.setMiArray(array);
+            playerGui.setListPosition(array);
             while (array[0] == -1 || array[1] == -1) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                array = playerGui.getMiArray();
+                array = playerGui.getListPosition();
             }
 
             shoot_row = array[0];
@@ -223,37 +221,33 @@ public class MapLoader {
         boolean validInput = false;
         while (!validInput) {
 
-            String[] arrayButtons = {"1: Horizontal derecha ➡ ", "2: Horizontal izquierda ⬅ ", "3: Vertical arriba ⬆ ", "4: Vertical abajo ⬇ "};
-            GraphicInterface window = new GraphicInterface(" Rotación del barco: ",arrayButtons);
-            int buttonPressed = window.showWindow(" BattleShip ",700,250,"images/SoldiersInc.jpg");
+            GUI.printTextQuestion(playerGui, " ROTACION DEL BARCO: ", Color.white);
+            int buttonPressed = playerGui.buttonOptionPressed(3);
 
             switch (buttonPressed) {
-                case 1 -> {
+                case 0 -> {
                     ship.setOrientationDx(1);
                     ship.setOrientationDy(0);
-                    ConsoleColors.printStatus("Barco rotado ➡");
+                    ConsoleColors.printStatus("Barco rotado ➡"); // consola
+                    validInput = true;
+                }
+                case 1 -> {
+                    ship.setOrientationDx(-1);
+                    ship.setOrientationDy(0);
+                    ConsoleColors.printStatus("Barco rotado ⬅"); // consola
                     validInput = true;
                 }
                 case 2 -> {
-                    ship.setOrientationDx(-1);
-                    ship.setOrientationDy(0);
-                    ConsoleColors.printStatus("Barco rotado ⬅");
+                    ship.setOrientationDx(0);
+                    ship.setOrientationDy(-1);
+                    ConsoleColors.printStatus("Barco rotado ⬆"); // consola
                     validInput = true;
                 }
                 case 3 -> {
                     ship.setOrientationDx(0);
-                    ship.setOrientationDy(-1);
-                    ConsoleColors.printStatus("Barco rotado ⬆");
-                    validInput = true;
-                }
-                case 4 -> {
-                    ship.setOrientationDx(0);
                     ship.setOrientationDy(1);
-                    ConsoleColors.printStatus("Barco rotado ⬇");
+                    ConsoleColors.printStatus("Barco rotado ⬇"); // consola
                     validInput = true;
-                }
-                default -> {
-                    ConsoleColors.printError("Rotación inválida, seleccione con 1, 2, 3, 4");
                 }
             }
         }

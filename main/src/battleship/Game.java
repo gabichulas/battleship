@@ -59,8 +59,8 @@ public class Game {
         int shotsCount = 30;
         player1.setRemainingShots(shotsCount);
         player2.setRemainingShots(shotsCount);
-        GUI.singleDisplayCount(player1Gui, "CONTADOR DE DISPAROS: " + player1.getRemainingShots() ,Color.white);
-        GUI.singleDisplayCount(player2Gui, "CONTADOR DE DISPAROS: " + player2.getRemainingShots() ,Color.white);
+        GUI.printTextShotsCount(player1Gui, "CONTADOR DE DISPAROS: " + player1.getRemainingShots() ,Color.white);
+        GUI.printTextShotsCount(player2Gui, "CONTADOR DE DISPAROS: " + player2.getRemainingShots() ,Color.white);
 
         // todo ask for ship lengths
         List<Integer> shipLengths = new ArrayList<Integer>();
@@ -92,8 +92,8 @@ public class Game {
 
         System.out.println("INICIANDO BATALLA NAVAL!"); // consola
         System.out.println("COMIENZAN LAS RONDAS!"); // consola
-        GUI.duoDisplayConsole(player1Gui, player2Gui, "INICIANDO BATALLA NAVAL!",Color.white);
-        GUI.duoDisplayConsole(player1Gui, player2Gui, "COMIENZAN LAS RONDAS!",Color.white);
+        GUI.printTextConsoleDuo(player1Gui, player2Gui, "INICIANDO BATALLA NAVAL!",Color.white);
+        GUI.printTextConsoleDuo(player1Gui, player2Gui, "COMIENZAN LAS RONDAS!",Color.white);
 
         Player current = player1;
         Player enemy = player2;
@@ -103,7 +103,7 @@ public class Game {
         {
             /// 1) Round -----------------------------------------------------------------------------------------------
             ConsoleColors.printStatus("RONDA DEL JUGADOR: " + current.getName());  // consola
-            GUI.duoDisplayConsole(player1Gui, player2Gui, "RONDA DEL JUGADOR: " + current.getName(),Color.white);
+            GUI.printTextConsoleDuo(player1Gui, player2Gui, "RONDA DEL JUGADOR: " + current.getName(),Color.white);
 
             boolean player1Round = Objects.equals(current.getName(), player1.getName());
             boolean currentDestroysAll = round(current, enemy, player1Round ? player1Gui : player2Gui);
@@ -116,7 +116,7 @@ public class Game {
 
                     // Jugador 2 tiene su ultima oportunidad para empatar
                     ConsoleColors.printStage("ULTIMA OPORTUNIDAD PARA EL JUGADOR 2"); // consola
-                    GUI.duoDisplayConsole(player1Gui, player2Gui, "ULTIMA OPORTUNIDAD PARA EL JUGADOR 2",Color.white);
+                    GUI.printTextConsoleDuo(player1Gui, player2Gui, "ULTIMA OPORTUNIDAD PARA EL JUGADOR 2",Color.white);
 
                     boolean player2draws = round(player2, player1, player2Gui);
                     if (player2draws) {
@@ -140,12 +140,12 @@ public class Game {
                 // De otro modo, el jugador con mayor cantidad de hits gana
                 if (current.getHits() > enemy.getHits()){
                     ConsoleColors.printWarning("AMBOS SE QUEDARON SIN TIROS, PERO " + current.getName() + " TUVO MAS ACIERTOS!"); // consola
-                    GUI.duoDisplayConsole(player1Gui, player2Gui, "Ambos se quedaron sin tiros, pero " + current.getName() + " tuvo mas aciertos!",Color.GREEN);
+                    GUI.printTextConsoleDuo(player1Gui, player2Gui, "Ambos se quedaron sin tiros, pero " + current.getName() + " tuvo mas aciertos!",Color.GREEN);
 
                     onPlayerWin(current);
                 } else {
                     ConsoleColors.printWarning("Ambos se quedaron sin tiros, pero " + enemy.getName() + " tuvo mas aciertos!"); // consola
-                    GUI.duoDisplayConsole(player1Gui, player2Gui, "Ambos se quedaron sin tiros, pero " + enemy.getName() + " tuvo mas aciertos!",Color.GREEN);
+                    GUI.printTextConsoleDuo(player1Gui, player2Gui, "Ambos se quedaron sin tiros, pero " + enemy.getName() + " tuvo mas aciertos!",Color.GREEN);
 
                     onPlayerWin(enemy);
                 }
@@ -168,7 +168,7 @@ public class Game {
     {
         if (current.getRemainingShots() == 0){
             ConsoleColors.printError("NO TE QUEDAN DISPAROS!"); // consola
-            GUI.singleDisplayCount(currentGui, "NO TE QUEDAN DISPAROS!",Color.YELLOW);
+            GUI.printTextShotsCount(currentGui, "NO TE QUEDAN DISPAROS!",Color.YELLOW);
             return false;
         }
 
@@ -185,7 +185,7 @@ public class Game {
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
 
             ConsoleColors.printWarning("TE QUEDAN " + current.getRemainingShots() +" TIROS"); // consola
-            GUI.singleDisplayCount(currentGui, "CONTADOR DE DISPAROS: "+ current.getRemainingShots(), Color.white);
+            GUI.printTextShotsCount(currentGui, "CONTADOR DE DISPAROS: "+ current.getRemainingShots(), Color.white);
 
             // Si al disparar, la cantidad de barcos enemigos restantes es 0.
             if (hit)
@@ -216,14 +216,14 @@ public class Game {
         do {
             currentGui.enableMatrixButtons(enemyMatrix);
             int[] array = {-1, -1};
-            currentGui.setMiArray(array);
+            currentGui.setListPosition(array);
             while (array[0] == -1 || array[1] == -1) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                array = currentGui.getMiArray();
+                array = currentGui.getListPosition();
             }
             shootPosition.x = array[1];
             shootPosition.y = array[0];
@@ -233,7 +233,7 @@ public class Game {
             // Verifica que el cuadrante sea valido
             if (shootQuadrant.isShot()) {
                 ConsoleColors.printWarning("YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO"); // consola
-                GUI.singleDisplayConsole(currentGui, "YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO", Color.YELLOW);
+                GUI.printTextConsoleSingle(currentGui, "YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO", Color.YELLOW);
             }
 
         } while(shootQuadrant.isShot());
@@ -246,16 +246,16 @@ public class Game {
 
         if (!didHit) {
             ConsoleColors.printFailure("AGUA! TIRO FALLADO."); // consola
-            GUI.singleDisplayConsole(currentGui, "AGUA! TIRO FALLADO.", Color.white);
+            GUI.printTextConsoleSingle(currentGui, "AGUA! TIRO FALLADO.", Color.white);
             return false;
         }
 
         ConsoleColors.printSuccess("¡IMPACTÓ A UN BARCO! CONTEO DE IMPACTOS = " + shot.getHitCount()); // consola
-        GUI.singleDisplayConsole(currentGui, "¡IMPACTÓ A UN BARCO! CONTEO DE IMPACTOS = " + shot.getHitCount() , Color.white);
+        GUI.printTextConsoleSingle(currentGui, "¡IMPACTÓ A UN BARCO! CONTEO DE IMPACTOS = " + shot.getHitCount() , Color.white);
         if (shot.getDestroyedCount() > 0)
         {
             ConsoleColors.printSuccess("BARCOS DESTRUIDOS: " + shot.getDestroyedCount()); // consola
-            GUI.singleDisplayConsole(currentGui, "BARCOS DESTRUIDOS: ", Color.white);
+            GUI.printTextConsoleSingle(currentGui, "BARCOS DESTRUIDOS: ", Color.white);
         }
         return true;
     }
@@ -266,7 +266,7 @@ public class Game {
     private void onGameDraw()
     {
         ConsoleColors.printSuccess("EMPATE!");
-        GUI.duoDisplayConsole(player1Gui, player2Gui,"EMPATE!", Color.GREEN);
+        GUI.printTextConsoleDuo(player1Gui, player2Gui,"EMPATE!", Color.GREEN);
     }
 
     /**
@@ -276,7 +276,7 @@ public class Game {
     private void onPlayerWin(Player player)
     {
         ConsoleColors.printSuccess("JUGADOR: " + player.getName() + " GANA LA PARTIDA!"); // consola
-        GUI.duoDisplayConsole(player1Gui, player2Gui, "JUGADOR: " + player.getName() + " GANA LA PARTIDA!", Color.GREEN);
+        GUI.printTextConsoleDuo(player1Gui, player2Gui, "JUGADOR: " + player.getName() + " GANA LA PARTIDA!", Color.GREEN);
     }
 
     private void updatePlayerGui(Player current, Player enemy)

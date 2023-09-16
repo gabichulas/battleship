@@ -6,59 +6,102 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUI {
-    JPanel panelBase;
-    private JPanel panelCuestionForButton;
+    private JPanel panelBase;
+    private JPanel panelQuestion;
     private JPanel panelButtonOptions;
     private JPanel panelEnemyMatrix;
     private JPanel myPanelMatrix;
-    private JPanel shotsPanel;
-    private JLabel textForButtomOptions;
+    private JPanel panelShots;
+    private JLabel labelTextQuestion;
     private JPanel panelVerticalNum1;
     private JPanel panelHorizontalNum;
     private JPanel panelVerticalNum2;
-    private JPanel panelCountShoots;
+    private JPanel panelCountShots;
     private JPanel panelConsole;
-    private JLabel textConsole;
-    private JLabel textCountShoot;
-    private JPanel buttonConteiner;
+    private JLabel labelTextConsole;
+    private JLabel labelTextCountShot;
+    private JPanel panelButtonShots;
+    private JLabel labelTextPrintConsole;
     private JButton[][] myMatrix;
     private JButton[][] enemyMatrix;
-    private int[] miArray;
+    private int[] listPosition;
     private JButton[] arrayButton;
-    private int buttonShotPresed;
+    private JPanel panelYesNo; // SI NO
+    private JPanel panelMenu; // MENU PRINCIPAL
+    private JPanel panelRotation; // ROTACION
+    private int buttonPressed = -1;
+
 
     public GUI() {
         initializeMyPanelMatrix();
         initializePanelEnemyMatrix();
         initializePanelShots();
+        initializePanelsOptions();
+    }
+    private void initializePanelsOptions() {
+        this.panelButtonOptions.setLayout(new FlowLayout());
+
+        String[][] botones = {
+                {"SI", "NO"},
+                {"CAMBIAR POSICIÓN", "ROTAR BARCO", "GUARDAR BARCO"},
+                {"HOR.DERECHA➡", "HOR.IZQUIERDA⬅", "VER.ARRIBA⬆", "VER.ABAJO⬇"}
+        };
+
+        JPanel[] paneles = new JPanel[botones.length];
+
+        for (int i = 0; i < botones.length; i++) {
+            paneles[i] = new JPanel();
+            String[] arr = botones[i];
+
+            for (int j = 0; j < arr.length; j++) {
+                String buttonText = arr[j];
+                int finalJ = j;
+                addButton(paneles[i], buttonText, e -> {
+                    System.out.println(finalJ);
+                    setButtonPressed(finalJ);
+                });
+            }
+            panelButtonOptions.add(paneles[i]);
+            paneles[i].setVisible(false);
+            switch (i){
+                case 0: setPanelYesNo(paneles[i]);
+                case 1: setPanelMenu(paneles[i]);
+                case 2: setPanelRotation(paneles[i]);
+            }
+        }
+    }
+    private void addButton(JPanel panel, String buttonText, ActionListener listener) {
+        JButton button = new JButton(buttonText);
+        button.addActionListener(listener);
+        panel.add(button);
     }
     private void initializePanelShots() {
         int rows = 5;
         arrayButton = new JButton[rows];
-        buttonConteiner.setLayout(new GridLayout(rows, 1));
+        panelButtonShots.setLayout(new GridLayout(rows, 1));
         for (int i = 0; i < rows; i++) {
             JButton button = new JButton();
             button.setBackground(Color.gray);
             switch (i+1){
                 case 1: button.setText("TIRO UNICO");
                     break;
-                case 2: button.setText("TIRO HORIZONTAL");
+                case 2: button.setText("TIRO VERTICAL");
                     break;
-                case 3: button.setText("TIRO VERTICAL");
+                case 3: button.setText("TIRO HORIZONTAL");
                     break;
                 case 4: button.setText("TIRO CRUZADO");
                     break;
                 case 5: button.setText("TIRO CUADRADO");
                     break;
             }
-            buttonConteiner.add(button);
+            panelButtonShots.add(button);
             button.setEnabled(false);
             arrayButton[i] = button;
             final int row = i;
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setButtonShotPresed(row);
+                    setButtonPressed(row);
                     disableShotsButtons(arrayButton);
                 }
             });
@@ -83,8 +126,8 @@ public class GUI {
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        int[] nuevoArray = {row, col};
-                        setMiArray(nuevoArray);
+                        int[] newListPosition = {row, col};
+                        setListPosition(newListPosition);
                         disableMatrixButtons(myMatrix);
                     }
                 });
@@ -111,8 +154,8 @@ public class GUI {
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        int[] nuevoArray = {row, col};
-                        setMiArray(nuevoArray);
+                        int[] newListPosition = {row, col};
+                        setListPosition(newListPosition);
                         disableMatrixButtons(enemyMatrix);
                     }
                 });
@@ -120,7 +163,32 @@ public class GUI {
             }
         }
     }
+    public int buttonOptionPressed(int optionPanel){
+        JPanel panel = null;
+        switch (optionPanel) {
+            case 1 -> panel = getPanelYesNo();
+            case 2 -> panel = getPanelMenu();
+            case 3 -> panel = getPanelRotation();
+        }
 
+        panel.setVisible(true);
+        int buttonPressed = -1;
+        setButtonPressed(buttonPressed);
+
+        while (buttonPressed == -1) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            buttonPressed = getButtonPressed();
+        }
+        int button = buttonPressed;
+        panel.setVisible(false);
+        setButtonPressed(-1);
+
+        return button;
+    }
     public void enableShotsButtons(JButton[] Array) {
         for (int i = 0; i < Array.length; i++) {
             Array[i].setEnabled(true);
@@ -131,7 +199,6 @@ public class GUI {
             Array[i].setEnabled(false);
         }
     }
-
     public void enableMatrixButtons(JButton[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -159,23 +226,30 @@ public class GUI {
     public void PaintQuadrant(int column, int row, JButton[][] Matrix, Color color) {
         Matrix[row][column].setBackground(color);
     }
-    public static void duoDisplayConsole(GUI guiP1, GUI guiP2, String text, Color color){
-        singleDisplayConsole(guiP1,text,color);
-        singleDisplayConsole(guiP2,text,color);
+    public static void printTextConsoleDuo(GUI guiP1, GUI guiP2, String text, Color color){
+        printTextConsoleSingle(guiP1,text,color);
+        printTextConsoleSingle(guiP2,text,color);
     }
-    public static void singleDisplayConsole(GUI gui, String text,Color color){
-        JLabel textConsole = gui.getTextConsole();
+    public static void printTextConsoleSingle(GUI gui, String text,Color color){
+        JLabel textLabel = gui.getTextLabel();
 
-        textConsole.setText(text);
-        gui.setTextConsole(textConsole);
-        textConsole.setForeground(color);
+        textLabel.setText(text);
+        gui.setTextLabel(textLabel);
+        textLabel.setForeground(color);
     }
-    public static void singleDisplayCount(GUI gui, String text,Color color){
-        JLabel textConsoleShoot = gui.getTextCountShoot();
+    public static void printTextQuestion(GUI gui, String text,Color color){
+        JLabel textLabel = gui.getTextQuestion();
 
-        textConsoleShoot.setText(text);
-        gui.setTextCountShoot(textConsoleShoot);
-        textConsoleShoot.setForeground(color);
+        textLabel.setText(text);
+        gui.setTextQuestion(textLabel);
+        textLabel.setForeground(color);
+    }
+    public static void printTextShotsCount(GUI gui, String text, Color color){
+        JLabel textLabel = gui.getTextCountShoot();
+
+        textLabel.setText(text);
+        gui.setTextCountShoot(textLabel);
+        textLabel.setForeground(color);
     }
 
     public JButton[][] getEnemyMatrix() {
@@ -190,29 +264,17 @@ public class GUI {
     public void setMyMatrix(JButton[][] myMatrix) {
         this.myMatrix = myMatrix;
     }
-    public JLabel getTextConsole() {
-        return textConsole;
-    }
-    public void setTextConsole(JLabel textConsole) {
-        this.textConsole = textConsole;
-    }
     public JLabel getTextCountShoot() {
-        return textCountShoot;
+        return labelTextCountShot;
     }
     public void setTextCountShoot(JLabel textCountShoot) {
-        this.textCountShoot = textCountShoot;
+        this.labelTextCountShot = textCountShoot;
     }
-    public int[] getMiArray() {
-        return miArray;
+    public int[] getListPosition() {
+        return listPosition;
     }
-    public void setMiArray(int[] miArray) {
-        this.miArray = miArray;
-    }
-    public int getButtonShotPresed() {
-        return buttonShotPresed;
-    }
-    public void setButtonShotPresed(int buttonShotPresed) {
-        this.buttonShotPresed = buttonShotPresed;
+    public void setListPosition(int[] listPosition) {
+        this.listPosition = listPosition;
     }
     public JButton[] getArrayButtonShot() {
         return arrayButton;
@@ -220,5 +282,40 @@ public class GUI {
     public void setArrayButtonShot(JButton[] arrayButton) {
         this.arrayButton = arrayButton;
     }
-
+    public JPanel getPanelYesNo() {
+        return panelYesNo;
+    }
+    public void setPanelYesNo(JPanel panelYesNo) {
+        this.panelYesNo = panelYesNo;
+    }
+    public JPanel getPanelMenu() {
+        return panelMenu;
+    }
+    public void setPanelMenu(JPanel panelMenu) {
+        this.panelMenu = panelMenu;
+    }
+    public JPanel getPanelRotation() {
+        return panelRotation;
+    }
+    public void setPanelRotation(JPanel panelRotation) {
+        this.panelRotation = panelRotation;
+    }
+    public int getButtonPressed() {
+        return buttonPressed;
+    }
+    public void setButtonPressed(int buttonPressed) {
+        this.buttonPressed = buttonPressed;
+    }
+    public void setTextLabel(JLabel textLabel) {
+        this.labelTextPrintConsole = textLabel;
+    }
+    public JLabel getTextLabel() {
+        return labelTextPrintConsole;
+    }
+    public void setTextQuestion(JLabel textForButtomOptions) {
+        this.labelTextQuestion = textForButtomOptions;
+    }
+    public JLabel getTextQuestion() {
+        return labelTextQuestion;
+    }
 }
