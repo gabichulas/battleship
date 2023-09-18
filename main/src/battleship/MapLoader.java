@@ -3,7 +3,10 @@ package battleship;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * Clase encargada de cargar el mapa de un jugador.
@@ -28,27 +31,54 @@ public class MapLoader {
      * Abre GUI para crear y posicionar a todos los barcos de un jugador.
      * @param shipLengths Longitudes de los barcos a cargar.
      */
-    public void loadPlayerMap(List<Integer> shipLengths){
+    public void loadPlayerMap(List<Integer> shipLengths, int islandCount){
         ConsoleColors.printStage("Loading map of player: " + player.getName());
-        // Displays the map and lets the user place each Ship
+        //Displays map
+        Map map = player.getMap();
+        MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
+
+        // Loads islands
+        List<Position> posList = placeIslands(map, islandCount);
+        renderer.setIslands(posList, playerGui);
+
         for (int shipLength : shipLengths)
         {
             // Creates new ship and places on the map
             placeShip(shipLength);
         }
         ConsoleColors.printSuccess("Mapa del jugador " + player.getName() + " cargado correctamente");
-
-        // Displays loaded map
-        Map map = player.getMap();
-        MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
-
         // Loads already added ships to the renderer
         for (Ship allyShip : map.getShips())
             renderer.setAllyShip(allyShip, playerGui);
 
         renderer.render();
     }
+    public List<Position> placeIslands(Map map, int islandCount){
+        int i;
+        List<Position> list = new ArrayList<Position>();
 
+        for (i=1 ; i <= islandCount; i++) {
+            int cols = map.getNumColumns();
+            int rows = map.getNumRows();
+
+            // Generate random positions
+            Position pos;
+            do {
+                Random r1 = new Random();
+                Random r2 = new Random();
+                int randColNum = r1.nextInt(cols);
+                int randRowNum = r2.nextInt(rows);
+                pos = new Position(randColNum, randRowNum);
+            } while (!isValidIsland(list, pos));
+
+            // Sets island in list
+            Quadrant quadrant = map.getQuadrant(pos);
+            quadrant.setIsland(true);
+            list.add(pos);
+        }
+
+        return list;
+    }
     /**
      * Agrega el barco al mapa. Durante esta función se le dan al jugador
      * todas las opciones de posicionamiento y rotación en el mapa.
@@ -103,6 +133,14 @@ public class MapLoader {
         }
     }
 
+    private boolean isValidIsland(List<Position> posList, Position pos){
+        for (Position i : posList){
+            if (Objects.equals(i.toString(), pos.toString())){
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Verifica si un cuadrante es válido.
      * Un cuadrante es válido cuando se encuentra dentro de los
@@ -127,6 +165,11 @@ public class MapLoader {
         if (quadrant.surroundsShip())
         {
             ConsoleColors.printError("Posición inválida, el barco no debe tener barcos adyacentes");
+            return false;
+        }
+        if (quadrant.isIsland())
+        {
+            ConsoleColors.printError("Posición inválida, el barco intersecta una isla.");
             return false;
         }
         return true;

@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 /**
  * Clase que renderiza el mapa.
@@ -175,5 +176,9 @@ public class MapRenderer
             quadrantPosition.x += ship.getOrientationDx();
             quadrantPosition.y += ship.getOrientationDy();
         }
+    }
+    public void setIslands(List<Position> pos, GUI gui){
+        for (Position position : pos)
+            gui.PaintQuadrant(position.getColumn(), position.getRow(), gui.getMyMatrix(), Color.YELLOW);
     }
 }

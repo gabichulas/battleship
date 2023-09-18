@@ -36,6 +36,7 @@ public class Game {
         // Initializes game constants
         int mapColumns = 10;
         int mapRows = 10;
+        int islandCount = 0;
 
         player1 = new Player();
         player2 = new Player();
@@ -46,8 +47,15 @@ public class Game {
         player1.setName(nameP1);
         player2.setName(nameP2);
 
+        String[] arrayButtons = {"1: SI ", "2: NO "};
+        GraphicInterface window = new GraphicInterface(" ¿DESEA COLOCAR ISLAS? ",arrayButtons);
+        int buttonPressed = window.showWindow(" BATALLA NAVAL ", 350, 200, "images/SoldiersInc.jpg");
+        if (buttonPressed == 1){
+            islandCount = InputUtils.inputNum("INGRESE CANTIDAD DE ISLAS", 3);
+        }
         int shipCount = InputUtils.inputNum("INGRESE CANTIDAD DE BARCOS", 5);
         //int shipCount = 3;
+
 
         player1Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 1: " + nameP1,100,50);
         player2Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 2: " + nameP2,700,50);
@@ -77,10 +85,9 @@ public class Game {
 
         // Loads maps
         MapLoader player1Loader = new MapLoader(player1, player1Gui);
-        player1Loader.loadPlayerMap(shipLengths);
+        player1Loader.loadPlayerMap(shipLengths, islandCount);
         MapLoader player2Loader = new MapLoader(player2, player2Gui);
-        player2Loader.loadPlayerMap(shipLengths);
-
+        player2Loader.loadPlayerMap(shipLengths, islandCount);
     }
 
     /**
@@ -308,7 +315,6 @@ public class Game {
                         quadrantColor = Color.RED;
                 }
                 currentGui.PaintQuadrant(col, row, currentGui.getEnemyMatrix(), quadrantColor);
-
                 // ---- Actualiza el mapa propio del enemigo
                 Color enemyColor = Color.WHITE;
                 if (quadrant.isShot()) {
@@ -326,6 +332,11 @@ public class Game {
                     enemyColor = Color.GREEN;
                 }
                 enemyGui.PaintQuadrant(col, row, enemyGui.getMyMatrix(), enemyColor);
+
+                if (quadrant.isIsland()){
+                    enemyColor = Color.YELLOW;
+                    enemyGui.PaintQuadrant(col, row, enemyGui.getMyMatrix(), enemyColor);
+                }
 
             }
         }

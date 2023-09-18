@@ -19,6 +19,8 @@ public class Quadrant
     // Quadrant away from other Ship.
     private boolean surroundsShip;
 
+    private boolean island;
+
     /**
      * Crea un cuadrante.
      */
@@ -70,4 +72,9 @@ public class Quadrant
      * @param state Booleano que indica el estado del cuadrante.
      */
     public void setShot(boolean state) { shot = state; }
+
+    public void setIsland(boolean island) {
+        this.island = island;
+    }
+    public boolean isIsland(){return island;}
 }
