@@ -173,7 +173,7 @@ public class Game {
      */
     private boolean round(Player current, Player enemy, GUI currentGui)
     {
-        if (current.getRemainingShots() == 0){
+        if (current.getRemainingShots() <= 0){
             ConsoleColors.printError("NO TE QUEDAN DISPAROS!"); // consola
             GUI.printTextShotsCount(currentGui, "NO TE QUEDAN DISPAROS!",Color.YELLOW);
             return false;
