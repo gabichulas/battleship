@@ -341,8 +341,12 @@ public class GUI {
                 if (quadrant.isShot())
                 {
                     // Hit
-                    if (quadrant.containsShip())
-                        color = Color.RED;
+                    if (quadrant.containsShip()) {
+                        if (quadrant.getShip().isAlive())
+                            color = Color.RED;
+                        else
+                            color = Color.BLACK;
+                    }
 
                     // Shot miss
                     else
