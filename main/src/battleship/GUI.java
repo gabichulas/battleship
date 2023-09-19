@@ -44,8 +44,8 @@ public class GUI {
         mainFrame.pack();
         mainFrame.setLocation(pos.x, pos.y);
         mainFrame.setVisible(true);
-        this.myMatrix = initializePanelMatrix(myPanelMatrix);
-        this.enemyMatrix = initializePanelMatrix(panelEnemyMatrix);
+        myMatrix = initializePanelMatrix(myPanelMatrix);
+        enemyMatrix = initializePanelMatrix(panelEnemyMatrix);
         initializePanelShots();
         initializePanelsOptions();
     }
