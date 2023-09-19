@@ -32,28 +32,25 @@ public class MapLoader {
      * @param shipLengths Longitudes de los barcos a cargar.
      */
     public void loadPlayerMap(List<Integer> shipLengths, int islandCount){
-        ConsoleColors.printStage("Loading map of player: " + player.getName());
-        //Displays map
-        Map map = player.getMap();
-        MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
+        playerGui.printConsoleStatus("Cargando mapa!");
 
-        // Loads islands
-        List<Position> posList = placeIslands(map, islandCount);
-        renderer.setIslands(posList, playerGui);
+        // Posiciona islas aleatoriamente
+        placeIslands(map, islandCount);
+
+        // Actualiza el mapa con islas
+        playerGui.updateAllyMap(map);
 
         for (int shipLength : shipLengths)
         {
-            // Creates new ship and places on the map
+            // Posiciona el barco y actualiza el mapa
             placeShip(shipLength);
+            playerGui.updateAllyMap(map);
         }
-        ConsoleColors.printSuccess("Mapa del jugador " + player.getName() + " cargado correctamente");
-        // Loads already added ships to the renderer
-        for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip, playerGui);
 
-        renderer.render();
+        playerGui.printConsoleStatus("Mapa cargado correctamente.");
+
     }
-    public List<Position> placeIslands(Map map, int islandCount){
+    public void placeIslands(Map map, int islandCount){
         int i;
         List<Position> list = new ArrayList<Position>();
 
@@ -74,10 +71,7 @@ public class MapLoader {
             // Sets island in list
             Quadrant quadrant = map.getQuadrant(pos);
             quadrant.setIsland(true);
-            list.add(pos);
         }
-
-        return list;
     }
     /**
      * Agrega el barco al mapa. Durante esta función se le dan al jugador
@@ -85,7 +79,6 @@ public class MapLoader {
      * @param shipLength Longitud del barco.
      */
     private void placeShip(int shipLength) {
-        ConsoleColors.printStage("Placing ship of length: " + shipLength);
         Ship ship = switch (shipLength) {
             case 1 -> new Boat();
             case 2 -> new Cruise();
@@ -93,13 +86,7 @@ public class MapLoader {
             case 4 -> new Vessel();
             default -> new AircraftCarrier();
         };
-        MapRenderer renderer = new MapRenderer(map.getNumColumns(), map.getNumRows());
-
-        // Loads already added ships to the renderer
-        for (Ship allyShip : map.getShips())
-            renderer.setAllyShip(allyShip, playerGui);
-
-        renderer.render();
+        playerGui.printConsoleStatus("Posicionando " + ship.getClass().getSimpleName() + ", de longitud "  + shipLength);
 
         // Menu for positioning ship
         while (true){
@@ -108,7 +95,7 @@ public class MapLoader {
             boolean validInput = false;
             while (!validInput) {
                 try {
-                    GUI.printTextQuestion(playerGui, "MENU DE POSICIONAMIENTO", Color.white);
+                    playerGui.printTextQuestion("MENU DE POSICIONAMIENTO", Color.WHITE);
                     int buttonPressed = playerGui.buttonOptionPressed(2);
                     switch (buttonPressed) {
                         case 0 -> {
@@ -127,10 +114,11 @@ public class MapLoader {
                         default -> throw new IOException();
                     }
                 } catch (IOException e) {
-                    ConsoleColors.printError("Opción inválida, seleccione con 1, 2, 3");
+                    playerGui.printConsoleError("Opción inválida, seleccione con 1, 2, 3");
                 }
             }
         }
+
     }
 
     private boolean isValidIsland(List<Position> posList, Position pos){
@@ -152,24 +140,24 @@ public class MapLoader {
         // Tests if the quadrant can be used for placing ships
         if (!map.inBounds(position))
         {
-            ConsoleColors.printError("Posición inválida, barco fuera de los límites del mapa");
+            playerGui.printConsoleError("Posición inválida, barco fuera de los límites del mapa");
             return false;
         }
 
         // Gets Quadrant and tests if it is surrounding or containing Ship
         Quadrant quadrant = map.getQuadrant(position);
         if (quadrant.containsShip()){
-            ConsoleColors.printError("Posición inválida, el barco intersecta a otro ya agregado");
+            playerGui.printConsoleError("Posición inválida, el barco intersecta a otro ya agregado");
             return false;
         }
         if (quadrant.surroundsShip())
         {
-            ConsoleColors.printError("Posición inválida, el barco no debe tener barcos adyacentes");
+            playerGui.printConsoleError("Posición inválida, el barco intersecta a otro ya agregado");
             return false;
         }
         if (quadrant.isIsland())
         {
-            ConsoleColors.printError("Posición inválida, el barco intersecta una isla.");
+            playerGui.printConsoleError("Posición inválida, el barco intersecta una isla.");
             return false;
         }
         return true;
@@ -210,7 +198,7 @@ public class MapLoader {
             return false;
         }
 
-        GUI.printTextQuestion(playerGui, " ¿DESEA COLOCAR EL BARCO EN EL CUADRANTE" + ship.getOrigin() + "?", Color.white);
+        playerGui.printTextQuestion(" ¿DESEA COLOCAR EL BARCO EN EL CUADRANTE" + ship.getOrigin() + "?", Color.WHITE);
         int buttonPressed = playerGui.buttonOptionPressed(1);
 
         if (buttonPressed == 0){
@@ -225,34 +213,23 @@ public class MapLoader {
      * */
     private void inputShipOrigin(Ship ship)
     {
-        try
-        {
-            int shoot_row;
-            int shoot_column;
+        JButton[][] myMatrix = playerGui.getMyMatrix();
 
-            JButton[][] myMatrix = playerGui.getMyMatrix();
+        playerGui.enableMatrixButtons(myMatrix);
 
-            playerGui.enableMatrixButtons(myMatrix);
-
-            int[] array = {-1, -1};
-            playerGui.setListPosition(array);
-            while (array[0] == -1 || array[1] == -1) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                array = playerGui.getListPosition();
+        int[] array = {-1, -1};
+        playerGui.setListPosition(array);
+        while (array[0] == -1 || array[1] == -1) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            shoot_row = array[0];
-            shoot_column = array[1];
-            ship.setOrigin(new Position(shoot_column, shoot_row));
-
-        } catch (Exception e)
-        {
-            ConsoleColors.printError("Posición inválida, debe tener formato: fila columna");
+            array = playerGui.getListPosition();
         }
+
+        Position position = new Position(array[1], array[0]);
+        ship.setOrigin(position);
     }
 
     /**
@@ -264,32 +241,32 @@ public class MapLoader {
         boolean validInput = false;
         while (!validInput) {
 
-            GUI.printTextQuestion(playerGui, " ROTACION DEL BARCO: ", Color.white);
+            playerGui.printTextQuestion(" ROTACIÓN DEL BARCO: ", Color.WHITE);
             int buttonPressed = playerGui.buttonOptionPressed(3);
 
             switch (buttonPressed) {
                 case 0 -> {
                     ship.setOrientationDx(1);
                     ship.setOrientationDy(0);
-                    ConsoleColors.printStatus("Barco rotado ➡"); // consola
+                    playerGui.printConsoleStatus("Barco rotado ➡");
                     validInput = true;
                 }
                 case 1 -> {
                     ship.setOrientationDx(-1);
                     ship.setOrientationDy(0);
-                    ConsoleColors.printStatus("Barco rotado ⬅"); // consola
+                    playerGui.printConsoleStatus("Barco rotado ⬅");
                     validInput = true;
                 }
                 case 2 -> {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(-1);
-                    ConsoleColors.printStatus("Barco rotado ⬆"); // consola
+                    playerGui.printConsoleStatus("Barco rotado ⬆");
                     validInput = true;
                 }
                 case 3 -> {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(1);
-                    ConsoleColors.printStatus("Barco rotado ⬇"); // consola
+                    playerGui.printConsoleStatus("Barco rotado ⬇");
                     validInput = true;
                 }
             }

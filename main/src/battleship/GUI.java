@@ -38,6 +38,16 @@ public class GUI {
         initializePanelShots();
         initializePanelsOptions();
     }
+    public static GUI initializeJFrame(String textTittle, int x, int y){
+        JFrame frame = new JFrame(textTittle);
+        GUI gui = new GUI();
+        frame.setContentPane(gui.panelBase);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocation(x,y);
+        frame.setVisible(true);
+        return gui;
+    }
     private void initializePanelsOptions() {
         this.panelButtonOptions.setLayout(new FlowLayout());
 
@@ -131,7 +141,6 @@ public class GUI {
                         disableMatrixButtons(myMatrix);
                     }
                 });
-                setMyMatrix(myMatrix);
             }
         }
     }
@@ -159,7 +168,6 @@ public class GUI {
                         disableMatrixButtons(enemyMatrix);
                     }
                 });
-                setEnemyMatrix(enemyMatrix);
             }
         }
     }
@@ -213,62 +221,43 @@ public class GUI {
             }
         }
     }
-    public static GUI initializeJFrame(String textTittle, int x, int y){
-        JFrame frame = new JFrame(textTittle);
-        GUI gui = new GUI();
-        frame.setContentPane(gui.panelBase);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocation(x,y);
-        frame.setVisible(true);
-        return gui;
+
+    public void printConsoleError(String text)
+    {
+        labelTextPrintConsole.setText(text);
+        labelTextPrintConsole.setForeground(Color.RED);
     }
-    public void PaintQuadrant(int column, int row, JButton[][] Matrix, Color color) {
-        Matrix[row][column].setBackground(color);
+    public void printConsoleStatus(String text)
+    {
+        labelTextPrintConsole.setText(text);
+        labelTextPrintConsole.setForeground(Color.WHITE);
+    }
+    public void printConsoleWarning(String text)
+    {
+        labelTextPrintConsole.setText(text);
+        labelTextPrintConsole.setForeground(Color.YELLOW);
     }
     public static void printTextConsoleDuo(GUI guiP1, GUI guiP2, String text, Color color){
-        printTextConsoleSingle(guiP1,text,color);
-        printTextConsoleSingle(guiP2,text,color);
+        guiP1.printTextConsole(text, color);
+        guiP2.printTextConsole(text, color);
     }
-    public static void printTextConsoleSingle(GUI gui, String text,Color color){
-        JLabel textLabel = gui.getTextLabel();
-
-        textLabel.setText(text);
-        gui.setTextLabel(textLabel);
-        textLabel.setForeground(color);
+    public void printTextConsole(String text,Color color){
+        labelTextPrintConsole.setText(text);
+        labelTextPrintConsole.setForeground(color);
     }
-    public static void printTextQuestion(GUI gui, String text,Color color){
-        JLabel textLabel = gui.getTextQuestion();
-
-        textLabel.setText(text);
-        gui.setTextQuestion(textLabel);
-        textLabel.setForeground(color);
+    public void printTextQuestion(String text,Color color){
+        labelTextQuestion.setText(text);
+        labelTextQuestion.setForeground(color);
     }
-    public static void printTextShotsCount(GUI gui, String text, Color color){
-        JLabel textLabel = gui.getTextCountShoot();
-
-        textLabel.setText(text);
-        gui.setTextCountShoot(textLabel);
-        textLabel.setForeground(color);
+    public void printTextShotsCount(String text, Color color){
+        labelTextCountShot.setText(text);
+        labelTextCountShot.setForeground(color);
     }
-
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;
     }
-    public void setEnemyMatrix(JButton[][] nuevaMatriz) {
-        this.enemyMatrix = nuevaMatriz;
-    }
     public JButton[][] getMyMatrix() {
         return myMatrix;
-    }
-    public void setMyMatrix(JButton[][] myMatrix) {
-        this.myMatrix = myMatrix;
-    }
-    public JLabel getTextCountShoot() {
-        return labelTextCountShot;
-    }
-    public void setTextCountShoot(JLabel textCountShoot) {
-        this.labelTextCountShot = textCountShoot;
     }
     public int[] getListPosition() {
         return listPosition;
@@ -306,16 +295,66 @@ public class GUI {
     public void setButtonPressed(int buttonPressed) {
         this.buttonPressed = buttonPressed;
     }
-    public void setTextLabel(JLabel textLabel) {
-        this.labelTextPrintConsole = textLabel;
+    public void updateAllyMap(Map allyMap)
+    {
+        for (int column = 0; column < allyMap.getNumColumns(); column++)
+        {
+            for (int row = 0; row < allyMap.getNumRows(); row++)
+            {
+                Position pos = new Position(column, row);
+                Quadrant quadrant = allyMap.getQuadrant(pos);
+                Color color = Color.WHITE;
+                if (quadrant.isShot()) {
+
+                    // Ship destroyed
+                    if (quadrant.containsShip())
+                        color = Color.RED;
+                        // Missed shot
+                    else
+                        color = Color.GRAY;
+
+                } else if (quadrant.containsShip())
+                {
+                    // Alive quadrant
+                    color = Color.GREEN;
+                }
+                else if (quadrant.isIsland())
+                {
+                    color = Color.YELLOW;
+                }
+                paintAllyQuadrant(pos, color);
+            }
+        }
     }
-    public JLabel getTextLabel() {
-        return labelTextPrintConsole;
+    public void updateEnemyMap(Map enemyMap)
+    {
+        for (int column = 0; column < enemyMap.getNumColumns(); column++)
+        {
+            for (int row = 0; row < enemyMap.getNumRows(); row++)
+            {
+                Position pos = new Position(column, row);
+                Quadrant quadrant = enemyMap.getQuadrant(new Position(column, row));
+
+                Color color = Color.WHITE;
+                if (quadrant.isShot())
+                {
+                    // Hit
+                    if (quadrant.containsShip())
+                        color = Color.RED;
+
+                    // Shot miss
+                    else
+                        color = Color.GRAY;
+                }
+                paintEnemyQuadrant(pos, color);
+            }
+        }
     }
-    public void setTextQuestion(JLabel textForButtomOptions) {
-        this.labelTextQuestion = textForButtomOptions;
+    private void paintAllyQuadrant(Position position, Color color) {
+        myMatrix[position.getRow()][position.getColumn()].setBackground(color);
     }
-    public JLabel getTextQuestion() {
-        return labelTextQuestion;
+    private void paintEnemyQuadrant(Position position, Color color) {
+        enemyMatrix[position.getRow()][position.getColumn()].setBackground(color);
     }
+
 }
