@@ -156,9 +156,13 @@ public class Game {
                 break;
             }
             /// 3) Intercambia los jugadores ---------------------------------------------------------------------------
-            Player temp = current;
-            current = enemy;
-            enemy = temp;
+            if (enemy.getRemainingShots() > 0)
+            {
+                Player temp = current;
+                current = enemy;
+                enemy = temp;
+            }
+
         }
 
         int buttonPressed = InputUtils.inputYesNoQuestion("DESEA VOLVER A JUGAR?");
@@ -179,11 +183,6 @@ public class Game {
      */
     private boolean round(Player current, Player enemy, GUI currentGui)
     {
-        if (current.getRemainingShots() <= 0){
-            currentGui.printConsoleError("No te quedan más disparos!");
-            currentGui.printTextShotsCount("NO TE QUEDAN DISPAROS!",Color.YELLOW);
-            return false;
-        }
 
         // Dispara hasta que falle
         boolean hit = true;
@@ -196,11 +195,17 @@ public class Game {
 
             // Actualiza la cantidad de disparos restantes
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
-            currentGui.printTextShotsCount("CONTADOR DE DISPAROS: " + current.getRemainingShots(), Color.YELLOW);
+            currentGui.printTextShotsCount("CONTADOR DE MISILES: " + current.getRemainingShots(), Color.YELLOW);
 
             // Si tras disparar, la cantidad de barcos enemigos restantes es 0.
             if (hit && enemy.getMap().getAliveShipCount() == 0)
                 return true;
+
+            if (current.getRemainingShots() <= 0){
+                currentGui.printConsoleError("Se acabaron los misiles!");
+                currentGui.printTextShotsCount("NO TE QUEDAN MISILES!", Color.YELLOW);
+                return false;
+            }
         }
         return false;
     }
@@ -214,6 +219,7 @@ public class Game {
      */
     private boolean shoot(Shot shot, Player enemy, Player current, GUI currentGui)
     {
+
         Map targetMap = enemy.getMap();
 
         Position shootPosition = InputUtils.inputShootPosition(currentGui, targetMap);
