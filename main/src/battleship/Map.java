@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Map {
     private List<Ship> ships;
-    private Quadrant[][] quadrants;
+    private final Quadrant[][] quadrants;
 
     private final int numRows;
 
@@ -58,14 +58,6 @@ public class Map {
     }
 
     /**
-     * Obtiene los barcos de un jugador.
-     * @return Lista de objetos de tipo Ship.
-     */
-    public List<Ship> getShips() {
-        return ships;
-    }
-
-    /**
      * Verifica si un cuadrante esta dentro del mapa o no.
      * @param position posicion a comprobar
      * @return Booleano que indica si el cuadrante esta dentro del mapa o no.
@@ -104,25 +96,23 @@ public class Map {
         return aliveShips;
     }
     /**
-     * Obtiene los barcos hundidos de un jugador.
-     * @return Lista de objetos de tipo Ship.
-     */
-    public List<Ship> getDestroyed(){
-        List<Ship> destroyedShips = new ArrayList<Ship>();
+     * @return cantidad de barcos vivos
+     * */
+    public int getAliveShipCount()
+    {
+        int count = 0;
         for (Ship ship : ships)
         {
-            if (!ship.isAlive())
-                destroyedShips.add(ship);
+            if (ship.isAlive())
+                count++;
         }
-        return destroyedShips;
+        return count;
     }
-
     /**
      * Agrega un barco al mapa.
      * @param ship Barco a agregar.
-     * @param gui Interfaz grafica.
      */
-    public void addShip(Ship ship, GUI gui)
+    public void addShip(Ship ship)
     {
         Position quadrantPosition = ship.getOrigin();
         // Adds Ship to all corresponding Quadrants

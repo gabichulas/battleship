@@ -4,8 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 public class GUI {
+    private JFrame mainFrame;
     private JPanel panelBase;
     private JPanel panelQuestion;
     private JPanel panelButtonOptions;
@@ -31,23 +33,19 @@ public class GUI {
     private JPanel panelRotation; // ROTACION
     private int buttonPressed = -1;
 
-
-    public GUI() {
+    public GUI(String title, Position pos) {
+        mainFrame = new JFrame(title);
+        mainFrame.setContentPane(this.panelBase);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.pack();
+        mainFrame.setLocation(pos.x, pos.y);
+        mainFrame.setVisible(true);
         initializeMyPanelMatrix();
         initializePanelEnemyMatrix();
         initializePanelShots();
         initializePanelsOptions();
     }
-    public static GUI initializeJFrame(String textTittle, int x, int y){
-        JFrame frame = new JFrame(textTittle);
-        GUI gui = new GUI();
-        frame.setContentPane(gui.panelBase);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocation(x,y);
-        frame.setVisible(true);
-        return gui;
-    }
+
     private void initializePanelsOptions() {
         this.panelButtonOptions.setLayout(new FlowLayout());
 

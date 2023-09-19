@@ -9,13 +9,13 @@ import java.awt.event.WindowEvent;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Clase que brinda todas las herramientas necesarias para utilizar la interfaz gráfica.
+ * PopUpWindow es una clase especializada para abrir ventanas pequeñas con botones
  *
  * @version 1.0, 21/09/2023
  * @author Lopez, Lucero, Yudica
  */
 
-public class GraphicInterface extends JPanel {
+public class ButtonsPopUpWindow extends JPanel {
     private String imageURL; // URL de la imagen de fondo
     private int buttonPressed; // Botón presionado por el usuario
     private JFrame window; // Ventana principal
@@ -24,10 +24,10 @@ public class GraphicInterface extends JPanel {
 
     /**
      * Crea una interfaz grafica.
-     * @param titleOfLabel aaa
-     * @param arrayButtons aaa
+     * @param titleOfLabel titulo
+     * @param arrayButtons array de Strings, que representan los botones a crear
      */
-    public GraphicInterface(String titleOfLabel, String[] arrayButtons) {
+    public ButtonsPopUpWindow(String titleOfLabel, String[] arrayButtons) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); // Configura el diseño vertical
         addTitle(titleOfLabel); // Agrega un título
         addButtons(arrayButtons); // Agrega botones
@@ -61,11 +61,11 @@ public class GraphicInterface extends JPanel {
     }
 
     // Método para agregar un botón a la interfaz
-    private void addButton(String text, final int buttonName) {
+    private void addButton(String text, final int buttonIndex) {
         JButton button = new JButton(text);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                setButtonPressed(buttonName); // Establece el botón presionado
+                buttonPressed = buttonIndex; // Establece el botón presionado
                 window.dispose(); // Cierra la ventana
             }
         });
@@ -77,11 +77,11 @@ public class GraphicInterface extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ImageIcon image = new ImageIcon(getImageURL());
+        ImageIcon image = new ImageIcon(imageURL);
         g.drawImage(image.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 
-    public int showWindow(String title, int width, int height, String ImageURL) {
+    public int showWindow(String title, int width, int height, String imageURL) {
         window = new JFrame(title);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setContentPane(this);
@@ -89,7 +89,7 @@ public class GraphicInterface extends JPanel {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-        setImageURL(ImageURL);
+        this.imageURL = imageURL;
 
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -107,24 +107,7 @@ public class GraphicInterface extends JPanel {
             e.printStackTrace();
         }
 
-        return getButtonPressed(); // Devuelve el botón presionado por el usuario
+        return buttonPressed; // Devuelve el botón presionado por el usuario
     }
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public int getButtonPressed() {
-        return buttonPressed;
-    }
-
-    public void setButtonPressed(int buttonPressed) {
-        this.buttonPressed = buttonPressed;
-    }
-
-
 }
 

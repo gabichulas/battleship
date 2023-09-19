@@ -11,8 +11,6 @@ public abstract class Ship {
     private int health;
     private final int length;
 
-
-
     /**
      * Un barco tiene una posición origen, y una orientación a traves de
      * la cual se ocupan cuadrantes, partiendo desde el origen
@@ -60,14 +58,6 @@ public abstract class Ship {
      */
     public void setSpecialShotLeft(int specialShotLeft) {
         this.specialShotLeft = specialShotLeft;
-    }
-
-    /**
-     * Obtiene la vida de un barco.
-     * @return Un entero que representa los puntos de vida restantes del barco.
-     */
-    public int getHealth(){
-        return health;
     }
 
     /**
@@ -139,4 +129,140 @@ public abstract class Ship {
      * Su retorno depende de la implementación de la propia subclase.
      */
     public abstract Shot getSpecialShot();
+}
+
+/**
+ * Clase que modela la Lancha.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ * @see battleship.Ship
+ */
+
+class Boat extends Ship{
+    /**
+     * Crea una lancha.
+     */
+    public Boat()
+    {
+        super(1);
+    }
+    /**
+     * Obtiene el disparo especial de la Lancha (no tiene disparo especial).
+     * @return Un objeto de tipo PointShot.
+     */
+    @Override
+    public Shot getSpecialShot() {
+        return new PointShot();
+    }
+}
+
+/**
+ * Clase que modela el Crucero.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ * @see battleship.Ship
+ */
+class Cruise extends Ship{
+    /**
+     * Crea un Crucero.
+     */
+    public Cruise()
+    {
+        super(2);
+        this.specialShotLeft = 4;
+    }
+
+    /**
+     * Obtiene el disparo especial del Crucero.
+     * @return Un objeto de tipo VerticalShot.
+     */
+
+    @Override
+    public Shot getSpecialShot() {
+        return new VerticalShot(1);
+    }
+}
+
+/**
+ * Clase que modela el Submarino.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ * @see battleship.Ship
+ */
+
+class Submarine extends Ship{
+    /**
+     * Crea un Submarino.
+     */
+    public Submarine()
+    {
+        super(3);
+        this.specialShotLeft = 4;
+    }
+    /**
+     * Obtiene el disparo especial del Submarino.
+     * @return Un objeto de tipo HorizontalShot.
+     */
+    @Override
+    public Shot getSpecialShot() {
+        return new HorizontalShot(1);
+    }
+}
+
+/**
+ * Clase que modela el Buque.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ * @see battleship.Ship
+ */
+
+class Vessel extends Ship{
+    /**
+     * Crea un Buque.
+     */
+    public Vessel()
+    {
+        super(4);
+        this.specialShotLeft = 3;
+    }
+    /**
+     * Obtiene el disparo especial del Buque.
+     * @return Un objeto de tipo CrossShot.
+     */
+    @Override
+    public Shot getSpecialShot() {
+        return new CrossShot(1);
+    }
+}
+
+/**
+ * Clase que modela el Portaaviones.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ * @see battleship.Ship
+ */
+
+class AircraftCarrier extends Ship{
+    /**
+     * Crea un Portaaviones.
+     */
+    public AircraftCarrier()
+    {
+        super(5);
+        this.specialShotLeft = 2;
+    }
+
+    /**
+     * Obtiene el disparo especial del Portaaviones.
+     * @return Un objeto de tipo SquareShot.
+     */
+    @Override
+    public Shot getSpecialShot() {
+        return new SquareShot();
+    }
 }
