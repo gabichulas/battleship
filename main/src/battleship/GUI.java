@@ -71,7 +71,6 @@ public class GUI {
                 String buttonText = arr[j];
                 int finalJ = j;
                 addButton(paneles[i], buttonText, e -> {
-                    System.out.println(finalJ);
                     setButtonPressed(finalJ);
                 });
             }

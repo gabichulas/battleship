@@ -19,6 +19,5 @@ public class Main {
         } while (playAgain);
         System.out.println("JUEGO TERMINADO"); // consola
         System.exit(0);
-
     }
 }
