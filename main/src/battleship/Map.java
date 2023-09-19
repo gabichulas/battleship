@@ -1,7 +1,5 @@
 package battleship;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -14,10 +12,8 @@ import java.util.List;
 
 public class Map {
     private List<Ship> ships;
-    private Quadrant[][] quadrants;
-
+    private final Quadrant[][] quadrants;
     private final int numRows;
-
     private final int numColumns;
 
     /**
@@ -55,14 +51,6 @@ public class Map {
      */
     public int getNumColumns() {
         return numColumns;
-    }
-
-    /**
-     * Obtiene los barcos de un jugador.
-     * @return Lista de objetos de tipo Ship.
-     */
-    public List<Ship> getShips() {
-        return ships;
     }
 
     /**
@@ -104,25 +92,23 @@ public class Map {
         return aliveShips;
     }
     /**
-     * Obtiene los barcos hundidos de un jugador.
-     * @return Lista de objetos de tipo Ship.
+     * @return cantidad de barcos vivos
      */
-    public List<Ship> getDestroyed(){
-        List<Ship> destroyedShips = new ArrayList<Ship>();
+    public int getAliveShipCount()
+    {
+        int count = 0;
         for (Ship ship : ships)
         {
-            if (!ship.isAlive())
-                destroyedShips.add(ship);
+            if (ship.isAlive())
+                count++;
         }
-        return destroyedShips;
+        return count;
     }
-
     /**
      * Agrega un barco al mapa.
      * @param ship Barco a agregar.
-     * @param gui Interfaz grafica.
      */
-    public void addShip(Ship ship, GUI gui)
+    public void addShip(Ship ship)
     {
         Position quadrantPosition = ship.getOrigin();
         // Adds Ship to all corresponding Quadrants

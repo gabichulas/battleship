@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
  */
 
 public class GUI {
-    private JFrame frame;
+    private JFrame mainFrame;
     private JPanel panelBase;
     private JPanel panelButtonOptions;
     private JPanel panelEnemyMatrix;
@@ -34,31 +34,23 @@ public class GUI {
 
     /**
      * Inicializa interfaz grafica.
+     * @param title titulo del JFrame.
+     * @param pos posicion del JFrame.
      */
-    public GUI(JFrame frame) {
-        this.frame = frame;
+    public GUI(String title, Position pos) {
+        mainFrame = new JFrame(title);
+        mainFrame.setContentPane(this.panelBase);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.pack();
+        mainFrame.setLocation(pos.x, pos.y);
+        mainFrame.setVisible(true);
         this.myMatrix = initializePanelMatrix(myPanelMatrix);
         this.enemyMatrix = initializePanelMatrix(panelEnemyMatrix);
         initializePanelShots();
         initializePanelsOptions();
     }
     /**
-     * Inicializa JFrame.
-     * @param textTittle titulo de la interfaz grafica.
-     * @return gui interfaz grafica.
-     */
-    public static GUI initializeJFrame(String textTittle, int x, int y){
-        JFrame frame = new JFrame(textTittle);
-        GUI gui = new GUI(frame);
-        frame.setContentPane(gui.panelBase);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocation(x,y);
-        frame.setVisible(true);
-        return gui;
-    }
-    /**
-     * Inicializa JPanel de opciones.
+     * Inicializa panel de opciones.
      */
     private void initializePanelsOptions() {
         this.panelButtonOptions.setLayout(new FlowLayout());
@@ -303,7 +295,7 @@ public class GUI {
         this.buttonPressed = buttonPressed;
     }
     public JFrame getFrame() {
-        return frame;
+        return mainFrame;
     }
     public void updateAllyMap(Map allyMap)
     {

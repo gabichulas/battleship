@@ -16,14 +16,12 @@ import java.util.Random;
 
 public class MapLoader {
 
-    private final Player player;
     private final GUI playerGui;
     private final Map map;
 
-    MapLoader(Player player, GUI playerGui)
+    MapLoader(Map map, GUI playerGui)
     {
-        this.player = player;
-        this.map = player.getMap();
+        this.map = map;
         this.playerGui = playerGui;
     }
 
@@ -50,7 +48,7 @@ public class MapLoader {
         playerGui.printConsoleStatus("Mapa cargado correctamente.");
 
     }
-    public void placeIslands(Map map, int islandCount){
+    private void placeIslands(Map map, int islandCount){
         int i;
         List<Position> list = new ArrayList<Position>();
 
@@ -202,7 +200,7 @@ public class MapLoader {
         int buttonPressed = playerGui.buttonOptionPressed(1);
 
         if (buttonPressed == 0){
-            map.addShip(ship, playerGui);
+            map.addShip(ship);
             return true;
         }
         return false;
@@ -230,6 +228,7 @@ public class MapLoader {
 
         Position position = new Position(array[1], array[0]);
         ship.setOrigin(position);
+        playerGui.printConsoleStatus("Barco posicionado en cuadrante: " + position);
     }
 
     /**

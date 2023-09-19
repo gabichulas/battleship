@@ -1,7 +1,4 @@
 import battleship.Game;
-import battleship.InputUtils;
-
-import javax.swing.*;
 
 /**
  * Videojuego desarrollado en Java inspirado en el clasico
@@ -17,18 +14,11 @@ public class Main {
         boolean playAgain;
         do {
             Game game = new Game();
-            game.play();
+            playAgain = game.play();
 
-            int buttonPressed = InputUtils.inputYesNoQuestion("DESEA VOLVER A JUGAR?");
-            if (buttonPressed == JOptionPane.YES_OPTION) {
-                playAgain = true;
-                game.getPlayer1().getFrame().dispose();
-                game.getPlayer2().getFrame().dispose();
-            } else{
-                playAgain = false;
-            }
         } while (playAgain);
         System.out.println("JUEGO TERMINADO"); // consola
         System.exit(0);
+
     }
 }

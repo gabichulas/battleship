@@ -44,9 +44,9 @@ public class Game {
         String nameP1;
         String nameP2;
 
-        do {
-            nameP1 = InputUtils.inputName("NOMBRE DEL JUGADOR 1");
-            nameP2 = InputUtils.inputName("NOMBRE DEL JUGADOR 2");
+        do { // Input de nombres, los cuales deben ser distintos
+            nameP1 = InputUtils.openStringPopUp("NOMBRE DEL JUGADOR 1");
+            nameP2 = InputUtils.openStringPopUp("NOMBRE DEL JUGADOR 2");
             if (nameP1.equalsIgnoreCase(nameP2)) {
                 JOptionPane.showMessageDialog(null, "Los nombres no pueden ser iguales. Por favor, ingrese nombres diferentes.");
             }
@@ -55,28 +55,31 @@ public class Game {
         player1.setName(nameP1);
         player2.setName(nameP2);
 
-
         int buttonPressed = InputUtils.inputYesNoQuestion("¿DESEA COLOCAR ISLAS?");
         if (buttonPressed == JOptionPane.YES_OPTION) {
-            islandCount = InputUtils.inputNum("INGRESE CANTIDAD DE ISLAS", 3);
+            islandCount = InputUtils.openIntPopUp("INGRESE CANTIDAD DE ISLAS", 3);
         }
 
-        int shipCount = InputUtils.inputNum("INGRESE CANTIDAD DE BARCOS", 5);
-        //int shipCount = 3;
+        // Cantidad de barcos
+        int shipCount = InputUtils.openIntPopUp("INGRESE CANTIDAD DE BARCOS", 5);
 
-        player1Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 1: " + nameP1,100,50);
-        player2Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 2: " + nameP2,700,50);
+        // Cantidad de misiles
+        int shotsCount = InputUtils.openIntPopUp("INGRESE CANTIDAD DE MISILES", 100);
+        while (shotsCount <= 0)
+            shotsCount =  InputUtils.openIntPopUp("INGRESE CANTIDAD DE MISILES", 100);
+
+        player1.setRemainingShots(shotsCount);
+        player2.setRemainingShots(shotsCount);
+
+        //Inicailización de interfaz
+        player1Gui = new GUI("BATALLA NAVAL PLAYER 1: " + nameP1,new Position(100,50));
+        player2Gui = new GUI("BATALLA NAVAL PLAYER 2: " + nameP2,new Position(700,50));
 
         player1.setMap(new Map(mapColumns, mapRows, shipCount));
         player2.setMap(new Map(mapColumns, mapRows, shipCount));
 
-        // todo: (optional?) Let user select shotsCount
-        int shotsCount = 30;
-        player1.setRemainingShots(shotsCount);
-        player2.setRemainingShots(shotsCount);
-
-        player1Gui.printTextShotsCount("CONTADOR DE DISPAROS: " + player1.getRemainingShots() ,Color.white);
-        player2Gui.printTextShotsCount("CONTADOR DE DISPAROS: " + player2.getRemainingShots() ,Color.white);
+        player1Gui.printTextShotsCount("CONTADOR DE DISPAROS: " + player1.getRemainingShots(), Color.WHITE);
+        player2Gui.printTextShotsCount("CONTADOR DE DISPAROS: " + player2.getRemainingShots(), Color.WHITE);
 
         List<Integer> shipLengths = new ArrayList<Integer>();
 
@@ -85,16 +88,16 @@ public class Game {
         }
 
         // Loads maps
-        MapLoader player1Loader = new MapLoader(player1, player1Gui);
+        MapLoader player1Loader = new MapLoader(player1.getMap(), player1Gui);
         player1Loader.loadPlayerMap(shipLengths, islandCount);
-        MapLoader player2Loader = new MapLoader(player2, player2Gui);
+        MapLoader player2Loader = new MapLoader(player2.getMap(), player2Gui);
         player2Loader.loadPlayerMap(shipLengths, islandCount);
     }
 
     /**
      * Controla la partida verificando los estados de la misma.
      */
-    public void play(){
+    public boolean play(){
 
         init();
         System.out.println("INICIANDO BATALLA NAVAL!"); // consola
@@ -118,7 +121,7 @@ public class Game {
             /// 2) Situaciones de final de partida----------------------------------------------------------------------
             if (currentDestroysAll) {
 
-                boolean player2CanDraw = player1.getMap().getAlive().size() == 1;
+                boolean player2CanDraw = player1.getMap().getAliveShipCount() == 1;
                 if (player1Round && player2CanDraw) {
 
                     // Jugador 2 tiene su ultima oportunidad para empatar
@@ -128,12 +131,12 @@ public class Game {
                     boolean player2draws = round(player2, player1, player2Gui);
                     if (player2draws) {
                         onGameDraw();
-                        return;
+                        break;
                     }
                 }
                 // Gana el jugador actual
                 onPlayerWin(current);
-                return;
+                break;
             }
             // Si ambos jugadores se quedan sin misiles
             if (current.getRemainingShots() == 0 && enemy.getRemainingShots() == 0){
@@ -141,7 +144,7 @@ public class Game {
                 // Si ambos jugadores tienen la misma cantidad de hits, entonces es un empate
                 if (current.getHits() == enemy.getHits()) {
                     onGameDraw();
-                    return;
+                    break;
                 }
 
                 // De otro modo, el jugador con mayor cantidad de hits gana
@@ -150,12 +153,21 @@ public class Game {
                 } else {
                     onPlayerWin(enemy);
                 }
-                return;
+                break;
             }
             /// 3) Intercambia los jugadores ---------------------------------------------------------------------------
             Player temp = current;
             current = enemy;
             enemy = temp;
+        }
+
+        int buttonPressed = InputUtils.inputYesNoQuestion("DESEA VOLVER A JUGAR?");
+        if (buttonPressed == JOptionPane.YES_OPTION) {
+            player1Gui.getFrame().dispose();
+            player2Gui.getFrame().dispose();
+            return true;
+        } else{
+            return false;
         }
     }
 
@@ -182,17 +194,13 @@ public class Game {
 
             updatePlayerGui(current, enemy);
 
-            // Catualiza la cantidad de disparos restantes
+            // Actualiza la cantidad de disparos restantes
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
-            currentGui.printTextShotsCount("CONTADOR DE DISPAROS: "+ current.getRemainingShots(), Color.YELLOW);
+            currentGui.printTextShotsCount("CONTADOR DE DISPAROS: " + current.getRemainingShots(), Color.YELLOW);
 
-            // Si al disparar, la cantidad de barcos enemigos restantes es 0.
-            if (hit)
-            {
-                int aliveCount = enemy.getMap().getAlive().size();
-                if (aliveCount == 0)
-                    return true;
-            }
+            // Si tras disparar, la cantidad de barcos enemigos restantes es 0.
+            if (hit && enemy.getMap().getAliveShipCount() == 0)
+                return true;
         }
         return false;
     }
@@ -207,34 +215,8 @@ public class Game {
     private boolean shoot(Shot shot, Player enemy, Player current, GUI currentGui)
     {
         Map targetMap = enemy.getMap();
-        Quadrant shootQuadrant;
-        Position shootPosition = new Position(0, 0);
 
-        JButton[][] enemyMatrix = currentGui.getEnemyMatrix();
-
-        do {
-            currentGui.setEnableMatrixButtons(enemyMatrix,true);
-            int[] array = {-1, -1};
-            currentGui.setListPosition(array);
-            while (array[0] == -1 || array[1] == -1) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                array = currentGui.getListPosition();
-            }
-            shootPosition.x = array[1];
-            shootPosition.y = array[0];
-
-            shootQuadrant = targetMap.getQuadrant(shootPosition);
-
-            // Verifica que el cuadrante sea valido
-            if (shootQuadrant.isShot()) {
-                currentGui.printTextConsole("YA DISPARÓ EN ESTE CUADRANTE, SELECCIONE UNO NUEVO", Color.YELLOW);
-            }
-
-        } while(shootQuadrant.isShot());
+        Position shootPosition = InputUtils.inputShootPosition(currentGui, targetMap);
 
         // Dispara
         boolean didHit = shot.shot(targetMap, shootPosition);
@@ -272,6 +254,10 @@ public class Game {
         GUI.printTextConsoleDuo(player1Gui, player2Gui, "JUGADOR: " + player.getName() + " GANA LA PARTIDA!", Color.GREEN);
     }
 
+    /**
+     * Luego de disparar, actualiza el mapa de ambos jugadores para poder visualizar
+     * los cambios
+     * */
     private void updatePlayerGui(Player current, Player enemy)
     {
         GUI currentGui = player1Gui;
@@ -282,11 +268,5 @@ public class Game {
         }
         currentGui.updateEnemyMap(enemy.getMap());
         enemyGui.updateAllyMap(enemy.getMap());
-    }
-    public GUI getPlayer1(){
-        return player1Gui;
-    }
-    public GUI getPlayer2(){
-        return player2Gui;
     }
 }
