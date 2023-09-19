@@ -5,42 +5,51 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Clase que modela la interfaz grafica
+ *
+ * @version 1.0, 21/09/2023
+ * @author Yudica, Lopez, Lucero.
+ */
+
 public class GUI {
+    private JFrame frame;
     private JPanel panelBase;
-    private JPanel panelQuestion;
     private JPanel panelButtonOptions;
     private JPanel panelEnemyMatrix;
     private JPanel myPanelMatrix;
-    private JPanel panelShots;
     private JLabel labelTextQuestion;
-    private JPanel panelVerticalNum1;
-    private JPanel panelHorizontalNum;
-    private JPanel panelVerticalNum2;
-    private JPanel panelCountShots;
-    private JPanel panelConsole;
-    private JLabel labelTextConsole;
     private JLabel labelTextCountShot;
     private JPanel panelButtonShots;
-    private JLabel labelTextPrintConsole;
+    private JLabel labelTextConsole;
+    private JLabel labelShotStatus;
     private JButton[][] myMatrix;
     private JButton[][] enemyMatrix;
     private int[] listPosition;
     private JButton[] arrayButton;
-    private JPanel panelYesNo; // SI NO
-    private JPanel panelMenu; // MENU PRINCIPAL
-    private JPanel panelRotation; // ROTACION
+    private JPanel panelYesNo;
+    private JPanel panelMenu;
+    private JPanel panelRotation;
     private int buttonPressed = -1;
 
-
-    public GUI() {
-        initializeMyPanelMatrix();
-        initializePanelEnemyMatrix();
+    /**
+     * Inicializa interfaz grafica.
+     */
+    public GUI(JFrame frame) {
+        this.frame = frame;
+        this.myMatrix = initializePanelMatrix(myPanelMatrix);
+        this.enemyMatrix = initializePanelMatrix(panelEnemyMatrix);
         initializePanelShots();
         initializePanelsOptions();
     }
+    /**
+     * Inicializa JFrame.
+     * @param textTittle titulo de la interfaz grafica.
+     * @return gui interfaz grafica.
+     */
     public static GUI initializeJFrame(String textTittle, int x, int y){
         JFrame frame = new JFrame(textTittle);
-        GUI gui = new GUI();
+        GUI gui = new GUI(frame);
         frame.setContentPane(gui.panelBase);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -48,6 +57,9 @@ public class GUI {
         frame.setVisible(true);
         return gui;
     }
+    /**
+     * Inicializa JPanel de opciones.
+     */
     private void initializePanelsOptions() {
         this.panelButtonOptions.setLayout(new FlowLayout());
 
@@ -80,11 +92,20 @@ public class GUI {
             }
         }
     }
+    /**
+     * Agrega botones a un JPanel.
+     * @param panel panel donde agregar botones.
+     * @param buttonText texto para el boton.
+     * @param listener listener para el boton
+     */
     private void addButton(JPanel panel, String buttonText, ActionListener listener) {
         JButton button = new JButton(buttonText);
         button.addActionListener(listener);
         panel.add(button);
     }
+    /**
+     * Inicializa panel con botoones de tipos de disparo.
+     */
     private void initializePanelShots() {
         int rows = 5;
         arrayButton = new JButton[rows];
@@ -112,25 +133,30 @@ public class GUI {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setButtonPressed(row);
-                    disableShotsButtons(arrayButton);
+                    setEnableArrayButtons(arrayButton,false);
                 }
             });
             setArrayButtonShot(arrayButton);
         }
     }
-    private void initializeMyPanelMatrix() {
+    /**
+     * Inicializa el panel de botones de la matriz.
+     * @param panelMatrix Panel donde poner los botones.
+     * @return Matriz de botones.
+     */
+    private JButton[][] initializePanelMatrix(JPanel panelMatrix) {
         int rows = 10;
         int cols = 10;
 
-        myMatrix = new JButton[10][10];
-        myPanelMatrix.setLayout(new GridLayout(rows, cols));
+        JButton[][] Matrix = new JButton[rows][cols];
+        panelMatrix.setLayout(new GridLayout(rows, cols));
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 JButton button = new JButton();
-                myPanelMatrix.add(button);
+                panelMatrix.add(button);
                 button.setEnabled(false);
-                myMatrix[i][j] = button;
+                Matrix[i][j] = button;
                 final int row = i;
                 final int col = j;
                 button.addActionListener(new ActionListener() {
@@ -138,39 +164,18 @@ public class GUI {
                     public void actionPerformed(ActionEvent e) {
                         int[] newListPosition = {row, col};
                         setListPosition(newListPosition);
-                        disableMatrixButtons(myMatrix);
+                        setEnableMatrixButtons(Matrix, false);
                     }
                 });
             }
         }
+        return Matrix;
     }
-    private void initializePanelEnemyMatrix() {
-        int rows = 10;
-        int cols = 10;
-
-        enemyMatrix = new JButton[10][10];
-        panelEnemyMatrix.setLayout(new GridLayout(rows, cols));
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                JButton button = new JButton();
-                button.setEnabled(false);
-
-                panelEnemyMatrix.add(button);
-                enemyMatrix[i][j] = button;
-                final int row = i;
-                final int col = j;
-                button.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        int[] newListPosition = {row, col};
-                        setListPosition(newListPosition);
-                        disableMatrixButtons(enemyMatrix);
-                    }
-                });
-            }
-        }
-    }
+    /**
+     * Cambia el panel de opciones.
+     * @param optionPanel entero que indica el tipo de panel.
+     * @return entero que indica el boton presionado.
+     */
     public int buttonOptionPressed(int optionPanel){
         JPanel panel = null;
         switch (optionPanel) {
@@ -197,53 +202,51 @@ public class GUI {
 
         return button;
     }
-    public void enableShotsButtons(JButton[] Array) {
+    /**
+     * Visibiliza o Invisibiliza el array de botones.
+     * @param Array array de botones.
+     * @param visible booleano visible o invisible.
+     */
+    public void setEnableArrayButtons(JButton[] Array, boolean visible) {
         for (int i = 0; i < Array.length; i++) {
-            Array[i].setEnabled(true);
+            Array[i].setEnabled(visible);
         }
     }
-    public void disableShotsButtons(JButton[] Array) {
-        for (int i = 0; i < Array.length; i++) {
-            Array[i].setEnabled(false);
-        }
-    }
-    public void enableMatrixButtons(JButton[][] matrix) {
+    /**
+     * Visibiliza o Invisibiliza el matriz de botones.
+     * @param matrix matriz de botones.
+     * @param visible booleano que indica visible o invisible.
+     */
+    public void setEnableMatrixButtons(JButton[][] matrix, boolean visible) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j].setEnabled(true);
-            }
-        }
-    }
-    public void disableMatrixButtons(JButton[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                matrix[i][j].setEnabled(false);
+                matrix[i][j].setEnabled(visible);
             }
         }
     }
 
     public void printConsoleError(String text)
     {
-        labelTextPrintConsole.setText(text);
-        labelTextPrintConsole.setForeground(Color.RED);
+        labelTextConsole.setText(text);
+        labelTextConsole.setForeground(Color.RED);
     }
     public void printConsoleStatus(String text)
     {
-        labelTextPrintConsole.setText(text);
-        labelTextPrintConsole.setForeground(Color.WHITE);
+        labelTextConsole.setText(text);
+        labelTextConsole.setForeground(Color.WHITE);
     }
     public void printConsoleWarning(String text)
     {
-        labelTextPrintConsole.setText(text);
-        labelTextPrintConsole.setForeground(Color.YELLOW);
+        labelTextConsole.setText(text);
+        labelTextConsole.setForeground(Color.YELLOW);
     }
     public static void printTextConsoleDuo(GUI guiP1, GUI guiP2, String text, Color color){
         guiP1.printTextConsole(text, color);
         guiP2.printTextConsole(text, color);
     }
     public void printTextConsole(String text,Color color){
-        labelTextPrintConsole.setText(text);
-        labelTextPrintConsole.setForeground(color);
+        labelTextConsole.setText(text);
+        labelTextConsole.setForeground(color);
     }
     public void printTextQuestion(String text,Color color){
         labelTextQuestion.setText(text);
@@ -252,6 +255,10 @@ public class GUI {
     public void printTextShotsCount(String text, Color color){
         labelTextCountShot.setText(text);
         labelTextCountShot.setForeground(color);
+    }
+    public void printTextShotStatus(String text, Color color) {
+        labelShotStatus.setText(text);
+        labelShotStatus.setForeground(color);
     }
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;
@@ -294,6 +301,12 @@ public class GUI {
     }
     public void setButtonPressed(int buttonPressed) {
         this.buttonPressed = buttonPressed;
+    }
+    public JFrame getFrame() {
+        return frame;
+    }
+    public void setFrame(JFrame frame){
+        this.frame = frame;
     }
     public void updateAllyMap(Map allyMap)
     {
@@ -356,5 +369,4 @@ public class GUI {
     private void paintEnemyQuadrant(Position position, Color color) {
         enemyMatrix[position.getRow()][position.getColumn()].setBackground(color);
     }
-
 }

@@ -215,7 +215,7 @@ public class MapLoader {
     {
         JButton[][] myMatrix = playerGui.getMyMatrix();
 
-        playerGui.enableMatrixButtons(myMatrix);
+        playerGui.setEnableMatrixButtons(myMatrix,true);
 
         int[] array = {-1, -1};
         playerGui.setListPosition(array);

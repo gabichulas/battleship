@@ -1,6 +1,7 @@
-
 import battleship.Game;
-import battleship.GraphicInterface;
+import battleship.InputUtils;
+
+import javax.swing.*;
 
 /**
  * Videojuego desarrollado en Java inspirado en el clasico
@@ -13,19 +14,21 @@ import battleship.GraphicInterface;
 public class Main {
     public static void main(String[] args) {
 
-        boolean playAgain = false;
+        boolean playAgain;
         do {
             Game game = new Game();
             game.play();
 
-            String[] arrayButtons = {"1: SI ", "2: NO "};
-            GraphicInterface window = new GraphicInterface(" ¿DESEA VOLVER A JUGAR? ",arrayButtons);
-            int buttonPressed = window.showWindow(" BATALLA NAVAL ",600,180,"images/SoldiersInc.jpg");
-
-            if (buttonPressed == 1) {
+            int buttonPressed = InputUtils.inputYesNoQuestion("DESEA VOLVER A JUGAR?");
+            if (buttonPressed == JOptionPane.YES_OPTION) {
                 playAgain = true;
+                game.getPlayer1().getFrame().dispose();
+                game.getPlayer2().getFrame().dispose();
+            } else{
+                playAgain = false;
             }
         } while (playAgain);
         System.out.println("JUEGO TERMINADO"); // consola
+        System.exit(0);
     }
 }

@@ -41,21 +41,28 @@ public class Game {
         player1 = new Player();
         player2 = new Player();
 
-        String nameP1 = InputUtils.inputName(1);
-        String nameP2 = InputUtils.inputName(2);
+        String nameP1;
+        String nameP2;
+
+        do {
+            nameP1 = InputUtils.inputName("NOMBRE DEL JUGADOR 1");
+            nameP2 = InputUtils.inputName("NOMBRE DEL JUGADOR 2");
+            if (nameP1.equalsIgnoreCase(nameP2)) {
+                JOptionPane.showMessageDialog(null, "Los nombres no pueden ser iguales. Por favor, ingrese nombres diferentes.");
+            }
+        } while (nameP1.equalsIgnoreCase(nameP2));
 
         player1.setName(nameP1);
         player2.setName(nameP2);
 
-        String[] arrayButtons = {"1: SI ", "2: NO "};
-        GraphicInterface window = new GraphicInterface(" ¿DESEA COLOCAR ISLAS? ",arrayButtons);
-        int buttonPressed = window.showWindow(" BATALLA NAVAL ", 350, 200, "images/SoldiersInc.jpg");
-        if (buttonPressed == 1){
+
+        int buttonPressed = InputUtils.inputYesNoQuestion("¿DESEA COLOCAR ISLAS?");
+        if (buttonPressed == JOptionPane.YES_OPTION) {
             islandCount = InputUtils.inputNum("INGRESE CANTIDAD DE ISLAS", 3);
         }
+
         int shipCount = InputUtils.inputNum("INGRESE CANTIDAD DE BARCOS", 5);
         //int shipCount = 3;
-
 
         player1Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 1: " + nameP1,100,50);
         player2Gui = GUI.initializeJFrame("BATALLA NAVAL PLAYER 2: " + nameP2,700,50);
@@ -104,7 +111,7 @@ public class Game {
             /// 1) Round -----------------------------------------------------------------------------------------------
             boolean player1Round = Objects.equals(current.getName(), player1.getName());
             GUI currentGui = player1Round ? player1Gui : player2Gui;
-            currentGui.printConsoleStatus("Jugador: " + current.getName() + ", es tu turno!");
+            currentGui.printTextConsoleDuo(player1Gui,player2Gui,"Jugador: " + current.getName() + ", es tu turno!",Color.white);
 
             boolean currentDestroysAll = round(current, enemy, currentGui);
 
@@ -179,7 +186,6 @@ public class Game {
             current.setRemainingShots(current.getRemainingShots() - shot.getRequiredMissileCount());
             currentGui.printTextShotsCount("CONTADOR DE DISPAROS: "+ current.getRemainingShots(), Color.YELLOW);
 
-
             // Si al disparar, la cantidad de barcos enemigos restantes es 0.
             if (hit)
             {
@@ -207,7 +213,7 @@ public class Game {
         JButton[][] enemyMatrix = currentGui.getEnemyMatrix();
 
         do {
-            currentGui.enableMatrixButtons(enemyMatrix);
+            currentGui.setEnableMatrixButtons(enemyMatrix,true);
             int[] array = {-1, -1};
             currentGui.setListPosition(array);
             while (array[0] == -1 || array[1] == -1) {
@@ -238,14 +244,14 @@ public class Game {
 
         if (didHit) {
             if (shot.getDestroyedCount() > 0) {
-                currentGui.printTextConsole("BARCOS DESTRUIDOS: " + shot.getDestroyedCount(), Color.GREEN);
+                currentGui.printTextShotStatus("BARCO DESTRUIDO " + shot.getDestroyedCount(), Color.RED);
             }
             else {
-                currentGui.printTextConsole("¡IMPACTÓ A UN BARCO! CONTEO DE IMPACTOS = " + shot.getHitCount(), Color.white);
+                currentGui.printTextShotStatus("¡IMPACTÓ A UN BARCO!", Color.ORANGE);
             }
             return true;
         }
-        currentGui.printTextConsole("AGUA! TIRO FALLADO.", Color.white);
+        currentGui.printTextShotStatus("AGUA! TIRO FALLADO.", Color.WHITE);
         return false;
     }
 
@@ -276,5 +282,11 @@ public class Game {
         }
         currentGui.updateEnemyMap(enemy.getMap());
         enemyGui.updateAllyMap(enemy.getMap());
+    }
+    public GUI getPlayer1(){
+        return player1Gui;
+    }
+    public GUI getPlayer2(){
+        return player2Gui;
     }
 }

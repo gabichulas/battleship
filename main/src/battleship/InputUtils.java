@@ -18,7 +18,7 @@ public class InputUtils {
 
             // Selects special Shot
             JButton[] arrayButtonShot = playerGui.getArrayButtonShot();
-            playerGui.enableShotsButtons(arrayButtonShot);
+            playerGui.setEnableArrayButtons(arrayButtonShot,true);
             int buttonShotPresed = -1;
             playerGui.setButtonPressed(buttonShotPresed);
             while (buttonShotPresed == -1) {
@@ -39,10 +39,10 @@ public class InputUtils {
             };
         }
     }
-    public static String inputName(int i) {
+    public static String inputName(String text) {
         String name;
         do {
-            name = JOptionPane.showInputDialog("NOMBRE DEL JUGADOR " + i );
+            name = JOptionPane.showInputDialog(text);
             if (name == null) {
                 // Si se presiona "Cancelar", el programa se cierra
                 System.exit(0);
@@ -64,8 +64,17 @@ public class InputUtils {
             } catch (NumberFormatException e) {
                 num = -1; // Valor no válido
             }
+            if (num <= 0 || num > numFinal){
+                JOptionPane.showMessageDialog(null, "DEBE INGRESAR UN NUMERO MENOR O IGUAL A " + numFinal);
+            }
         } while (num <= 0 || num > numFinal);
         return num;
+    }
+
+    public static int inputYesNoQuestion(String text) {
+        String[] options = {"Sí", "No"};
+        int choice = JOptionPane.showOptionDialog(null, text, "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        return choice;
     }
 
     private static Shot chooseShip(Player player, GUI playerGui, String className)
