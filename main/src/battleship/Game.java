@@ -88,8 +88,10 @@ public class Game {
         }
 
         // Loads maps
+        openCloseWindow(player1Gui,player2Gui);
         MapLoader player1Loader = new MapLoader(player1.getMap(), player1Gui);
         player1Loader.loadPlayerMap(shipLengths, islandCount);
+        openCloseWindow(player2Gui,player1Gui);
         MapLoader player2Loader = new MapLoader(player2.getMap(), player2Gui);
         player2Loader.loadPlayerMap(shipLengths, islandCount);
     }
@@ -115,6 +117,12 @@ public class Game {
             boolean player1Round = Objects.equals(current.getName(), player1.getName());
             GUI currentGui = player1Round ? player1Gui : player2Gui;
             currentGui.printTextConsoleDuo(player1Gui,player2Gui,"Jugador: " + current.getName() + ", es tu turno!",Color.white);
+
+            if (current.getName() == player1.getName()){
+                openCloseWindow(player1Gui,player2Gui);
+            }else{
+                openCloseWindow(player2Gui,player1Gui);
+            }
 
             boolean currentDestroysAll = round(current, enemy, currentGui);
 
@@ -162,8 +170,10 @@ public class Game {
                 current = enemy;
                 enemy = temp;
             }
-
         }
+
+        player1Gui.getFrame().setVisible(true);
+        player2Gui.getFrame().setVisible(true);
 
         int buttonPressed = InputUtils.inputYesNoQuestion("DESEA VOLVER A JUGAR?");
         if (buttonPressed == JOptionPane.YES_OPTION) {
@@ -274,5 +284,18 @@ public class Game {
         }
         currentGui.updateEnemyMap(enemy.getMap());
         enemyGui.updateAllyMap(enemy.getMap());
+    }
+    /**
+     * cierra y abre la ventana con el tablero.
+     */
+    private void openCloseWindow(GUI playerCurent,GUI playerEnemy){
+        try {
+            // Pausa el código durante 1 segundo (1000 milisegundos)
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        playerEnemy.getFrame().setVisible(false);
+        playerCurent.getFrame().setVisible(true);
     }
 }

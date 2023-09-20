@@ -43,7 +43,7 @@ public class GUI {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.pack();
         mainFrame.setLocation(pos.x, pos.y);
-        mainFrame.setVisible(true);
+        mainFrame.setVisible(false);
         myMatrix = initializePanelMatrix(myPanelMatrix);
         enemyMatrix = initializePanelMatrix(panelEnemyMatrix);
         initializePanelShots();
