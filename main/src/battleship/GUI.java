@@ -170,9 +170,9 @@ public class GUI {
     public int buttonOptionPressed(int optionPanel){
         JPanel panel = null;
         switch (optionPanel) {
-            case 1 -> panel = getPanelYesNo();
-            case 2 -> panel = getPanelMenu();
-            case 3 -> panel = getPanelRotation();
+            case 1 : panel = getPanelYesNo(); break;
+            case 2 : panel = getPanelMenu(); break;
+            default :  panel = getPanelRotation();
         }
 
         panel.setVisible(true);

@@ -31,14 +31,15 @@ public class InputUtils {
                 }
                 buttonShotPressed = playerGui.getButtonPressed();
             }
-
-            return switch (buttonShotPressed) {
-                case 1 -> chooseShip(player, playerGui, "Cruise");
-                case 2 -> chooseShip(player, playerGui,"Submarine");
-                case 3 -> chooseShip(player, playerGui, "Vessel");
-                case 4 -> chooseShip(player, playerGui,"AircraftCarrier");
-                default -> new PointShot();
-            };
+            Shot chosenShip = new PointShot();
+            switch (buttonShotPressed) {
+                case 1 : chosenShip = chooseShip(player, playerGui, "Cruise"); break;
+                case 2 : chosenShip = chooseShip(player, playerGui,"Submarine"); break;
+                case 3 : chosenShip = chooseShip(player, playerGui, "Vessel"); break;
+                case 4 : chosenShip = chooseShip(player, playerGui,"AircraftCarrier"); break;
+                default : new PointShot();
+            }
+            return chosenShip;
         }
     }
 

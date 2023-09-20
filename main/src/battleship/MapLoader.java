@@ -77,12 +77,14 @@ public class MapLoader {
      * @param shipLength Longitud del barco.
      */
     private void placeShip(int shipLength) {
-        Ship ship = switch (shipLength) {
-            case 1 -> new Boat();
-            case 2 -> new Cruise();
-            case 3 -> new Submarine();
-            case 4 -> new Vessel();
-            default -> new AircraftCarrier();
+        Ship ship;
+
+        switch (shipLength) {
+            case 1 : ship = new Boat(); break;
+            case 2 : ship = new Cruise(); break;
+            case 3 : ship = new Submarine(); break;
+            case 4 : ship = new Vessel(); break;
+            default : ship = new AircraftCarrier();
         };
         playerGui.printConsoleStatus("Posicionando " + ship.getClass().getSimpleName() + ", de longitud "  + shipLength);
 
@@ -96,20 +98,23 @@ public class MapLoader {
                     playerGui.printTextQuestion("MENU DE POSICIONAMIENTO", Color.WHITE);
                     int buttonPressed = playerGui.buttonOptionPressed(2);
                     switch (buttonPressed) {
-                        case 0 -> {
+                        case 0 : {
                             inputShipOrigin(ship);
                             validInput = true;
+                            break;
                         }
-                        case 1 -> {
+                        case 1 : {
                             inputShipRotation(ship);
                             validInput = true;
+                            break;
                         }
-                        case 2 -> {
+                        case 2 : {
                             if (inputSaveShip(ship)) {
                                 return;
                             }
+                            break;
                         }
-                        default -> throw new IOException();
+                        default : throw new IOException();
                     }
                 } catch (IOException e) {
                     playerGui.printConsoleError("Opción inválida, seleccione con 1, 2, 3");
@@ -244,29 +249,33 @@ public class MapLoader {
             int buttonPressed = playerGui.buttonOptionPressed(3);
 
             switch (buttonPressed) {
-                case 0 -> {
+                case 0 : {
                     ship.setOrientationDx(1);
                     ship.setOrientationDy(0);
                     playerGui.printConsoleStatus("Barco rotado ➡");
                     validInput = true;
+                    break;
                 }
-                case 1 -> {
+                case 1 : {
                     ship.setOrientationDx(-1);
                     ship.setOrientationDy(0);
                     playerGui.printConsoleStatus("Barco rotado ⬅");
                     validInput = true;
+                    break;
                 }
-                case 2 -> {
+                case 2 : {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(-1);
                     playerGui.printConsoleStatus("Barco rotado ⬆");
                     validInput = true;
+                    break;
                 }
-                case 3 -> {
+                case 3 : {
                     ship.setOrientationDx(0);
                     ship.setOrientationDy(1);
                     playerGui.printConsoleStatus("Barco rotado ⬇");
                     validInput = true;
+                    break;
                 }
             }
         }
