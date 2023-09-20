@@ -216,86 +216,210 @@ public class GUI {
         }
     }
 
+    /**
+     * Imprime un error.
+     * @param text Texto del error.
+     */
     public void printConsoleError(String text)
     {
         labelTextConsole.setText(text);
         labelTextConsole.setForeground(Color.RED);
     }
+    /**
+     * Imprime un estado.
+     * @param text Texto del estado.
+     */
     public void printConsoleStatus(String text)
     {
         labelTextConsole.setText(text);
         labelTextConsole.setForeground(Color.WHITE);
     }
+    /**
+     * Imprime una advertencia.
+     * @param text Texto de la advertencia.
+     */
     public void printConsoleWarning(String text)
     {
         labelTextConsole.setText(text);
         labelTextConsole.setForeground(Color.YELLOW);
     }
+
+    /**
+     * Imprime un mensaje en ambas interfaces.
+     * @param guiP1 Interfaz del jugador uno.
+     * @param guiP2 Interfaz del jugador dos.
+     * @param text Texto del mensaje.
+     * @param color Color del mensaje.
+     */
     public static void printTextConsoleDuo(GUI guiP1, GUI guiP2, String text, Color color){
         guiP1.printTextConsole(text, color);
         guiP2.printTextConsole(text, color);
     }
+
+    /**
+     * Imprime un texto en la consola de la interfaz.
+     * @param text Texto del mensaje.
+     * @param color Color del mensaje.
+     */
     public void printTextConsole(String text,Color color){
         labelTextConsole.setText(text);
         labelTextConsole.setForeground(color);
     }
+
+    /**
+     * Imprime una pregunta.
+     * @param text Texto del mensaje.
+     * @param color color del mensaje.
+     */
     public void printTextQuestion(String text,Color color){
         labelTextQuestion.setText(text);
         labelTextQuestion.setForeground(color);
     }
+
+    /**
+     * Imprime los disparos restantes de un jugador.
+     * @param text Disparos restantes.
+     * @param color Color del texto.
+     */
     public void printTextShotsCount(String text, Color color){
         labelTextCountShot.setText(text);
         labelTextCountShot.setForeground(color);
     }
+
+    /**
+     * Imprime un texto indicando el estado de un disparo.
+     * @param text Texto del mensaje.
+     * @param color Color del mensaje.
+     */
     public void printTextShotStatus(String text, Color color) {
         labelShotStatus.setText(text);
         labelShotStatus.setForeground(color);
     }
+
+    /**
+     * Obtiene la matriz del enemigo.
+     * @return Matriz del enemigo.
+     */
     public JButton[][] getEnemyMatrix() {
         return enemyMatrix;
     }
+
+    /**
+     * Obtiene la matriz del propio jugador.
+     * @return Matriz del jugador.
+     */
     public JButton[][] getMyMatrix() {
         return myMatrix;
     }
+
+    /**
+     * Obtiene la lista de posicion.
+     * @return Lista de posicion.
+     */
     public int[] getListPosition() {
         return listPosition;
     }
+
+    /**
+     * Establece la lista de posicion.
+     * @param listPosition Lista de posicion.
+     */
     public void setListPosition(int[] listPosition) {
         this.listPosition = listPosition;
     }
+
+    /**
+     * Obtiene el array de botones de disparo del jugador.
+     * @return Array de botones.
+     */
     public JButton[] getArrayButtonShot() {
         return arrayButton;
     }
+
+    /**
+     * Establece el array de botones de disparo del jugador.
+     * @param arrayButton Array de botones.
+     */
     public void setArrayButtonShot(JButton[] arrayButton) {
         this.arrayButton = arrayButton;
     }
+
+    /**
+     * Obtiene el panel de Si/No.
+     * @return Panel de Si/No.
+     */
     public JPanel getPanelYesNo() {
         return panelYesNo;
     }
+
+    /**
+     * Establece el panel de Si/No.
+     * @param panelYesNo Panel de Si/No.
+     */
     public void setPanelYesNo(JPanel panelYesNo) {
         this.panelYesNo = panelYesNo;
     }
+
+    /**
+     * Obtiene el panel de menu.
+     * @return Panel de menu.
+     */
     public JPanel getPanelMenu() {
         return panelMenu;
     }
+
+    /**
+     * Establece el panel de menu.
+     * @param panelMenu Panel de menu.
+     */
     public void setPanelMenu(JPanel panelMenu) {
         this.panelMenu = panelMenu;
     }
+
+    /**
+     * Obtiene el panel de rotacion.
+     * @return Panel de rotacion.
+     */
     public JPanel getPanelRotation() {
         return panelRotation;
     }
+
+    /**
+     * Establece el panel de rotacion.
+     * @param panelRotation Panel de rotacion.
+     */
     public void setPanelRotation(JPanel panelRotation) {
         this.panelRotation = panelRotation;
     }
+
+    /**
+     * Obtiene un entero que indica si un boton fue presionado.
+     * @return Entero que indica el estado de un boton.
+     */
     public int getButtonPressed() {
         return buttonPressed;
     }
+
+    /**
+     * Establece un entero que indica si un boton fue presionado.
+     * @param buttonPressed Entero que indica el estado de un boton.
+     */
     public void setButtonPressed(int buttonPressed) {
         this.buttonPressed = buttonPressed;
     }
+
+    /**
+     * Obtiene el panel principal.
+     * @return Panel principal.
+     */
     public JFrame getFrame() {
         return mainFrame;
     }
+
+    /**
+     * Actualiza el mapa aliado.
+     * @param allyMap Mapa del jugador.
+     */
     public void updateAllyMap(Map allyMap)
     {
         for (int column = 0; column < allyMap.getNumColumns(); column++)
@@ -327,6 +451,11 @@ public class GUI {
             }
         }
     }
+
+    /**
+     * Actualiza el mapa del enemigo.
+     * @param enemyMap Mapa del enemigo.
+     */
     public void updateEnemyMap(Map enemyMap)
     {
         for (int column = 0; column < enemyMap.getNumColumns(); column++)
@@ -355,9 +484,21 @@ public class GUI {
             }
         }
     }
+
+    /**
+     * Pinta un cuadrante del mapa aliado.
+     * @param position Posicion a pintar.
+     * @param color Color.
+     */
     private void paintAllyQuadrant(Position position, Color color) {
         myMatrix[position.getRow()][position.getColumn()].setBackground(color);
     }
+
+    /**
+     * Pinta un cuadrante del mapa enemigo.
+     * @param position Posicion a pintar.
+     * @param color Color.
+     */
     private void paintEnemyQuadrant(Position position, Color color) {
         enemyMatrix[position.getRow()][position.getColumn()].setBackground(color);
     }

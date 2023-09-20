@@ -73,8 +73,17 @@ public class Quadrant
      */
     public void setShot(boolean state) { shot = state; }
 
+    /**
+     * Establece una isla en el cuadrante.
+     * @param island Booleano que indica si hay o no una isla.
+     */
     public void setIsland(boolean island) {
         this.island = island;
     }
+
+    /**
+     * Verifica si el cuadrante es una isla.
+     * @return Booleano que indica si el cuadrante es una isla.
+     */
     public boolean isIsland(){return island;}
 }

@@ -48,6 +48,12 @@ public class MapLoader {
         playerGui.printConsoleStatus("Mapa cargado correctamente.");
 
     }
+
+    /**
+     * Ubica las islas en el mapa.
+     * @param map Mapa del jugador.
+     * @param islandCount Cantidad de islas a ubicar.
+     */
     private void placeIslands(Map map, int islandCount){
         int i;
         List<Position> list = new ArrayList<Position>();
@@ -124,6 +130,12 @@ public class MapLoader {
 
     }
 
+    /**
+     * Indica si la isla generada es valida.
+     * @param posList Lista de posiciones de las islas ya generadas (estas son validas).
+     * @param pos Posicion de la isla generada.
+     * @return Booleano que indica si la isla es valida.
+     */
     private boolean isValidIsland(List<Position> posList, Position pos){
         for (Position i : posList){
             if (Objects.equals(i.toString(), pos.toString())){

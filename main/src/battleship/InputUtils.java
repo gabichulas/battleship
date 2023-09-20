@@ -3,6 +3,13 @@ package battleship;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Clase que brinda herramientas de entrada para facilitar el desarrollo del programa.
+ *
+ * @version 1.0, 21/09/2023
+ * @author Lopez, Lucero, Yudica
+ */
+
 
 public class InputUtils {
     // Class with static methods used to simplify the usage of user input data
@@ -43,6 +50,12 @@ public class InputUtils {
         }
     }
 
+    /**
+     * Controla la posición elegida por el jugador para disparar.
+     * @param playerGui Interfaz del usuario.
+     * @param enemyMap Mapa del usuario enemigo.
+     * @return Posición disparada.
+     */
     public static Position inputShootPosition(GUI playerGui, Map enemyMap)
     {
         Position shootPosition = new Position(0, 0);
@@ -115,12 +128,24 @@ public class InputUtils {
         return num;
     }
 
+    /**
+     * Función que es utilizada para inputs de tipo Si/No.
+     * @param text Texto de la pregunta.
+     * @return Eleccion del jugador.
+     */
     public static int inputYesNoQuestion(String text) {
         String[] options = {"Sí", "No"};
         int choice = JOptionPane.showOptionDialog(null, text, "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         return choice;
     }
 
+    /**
+     * Funcion que controla las condiciones de eleccion de un barco para utilizar su respectivo disparo especial.
+     * @param player Jugador.
+     * @param playerGui Interfaz del jugador.
+     * @param className Nombre de la clase del barco.
+     * @return Disparo elegido.
+     */
     private static Shot chooseShip(Player player, GUI playerGui, String className)
     {
         boolean hasRequiredShipType = false;

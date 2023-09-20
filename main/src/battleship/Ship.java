@@ -68,9 +68,19 @@ public abstract class Ship {
         return length;
     }
 
+    /**
+     * Obtiene el origen del barco.
+     * @return Posicion de origen del barco.
+     */
+
     public Position getOrigin() {
         return new Position(origin.x, origin.y);
     }
+
+    /**
+     * Establece el origen del barco.
+     * @param origin Posicion de origen del barco.
+     */
 
     public void setOrigin(Position origin) {
         this.origin = origin;
